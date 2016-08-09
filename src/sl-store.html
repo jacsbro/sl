@@ -1,0 +1,74 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+
+<dom-module id="sl-store">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <app-localstorage-document id="myapp_storage" key="sl" data="{{internal}}">
+    </app-localstorage-document>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'sl-store',
+
+      properties: {
+        // internal storage value for app-localstorage-document (stringified JSON)
+        internal: {
+          type: Object,
+        },
+        // external value for consumers - parsed from JSON
+        external: {
+          type: Object,
+          notify: true
+        },
+      },
+
+      /**
+       * save the current value
+       */
+      save: function() {
+        this.set('internal', JSON.stringify(this.external));
+      },
+
+      /**
+       * get the current value from storage
+       */
+      get: function() {
+        var theData = this.$.myapp_storage.storage.sl;
+        this.internal = theData;
+        if (theData != null) {
+          // determine number of chars to cut off
+          for (var i=0; i<theData.length; i++) {
+            if (theData[i] === '{' || theData[i] === '[') {
+              break;
+            }
+          }
+          // cut off first and last character (internal value is a string)
+          theData = theData.slice(i);
+          theData = theData.slice(0, -i);
+          // strip backslashes
+          theData = theData.replace(/\\/g, "");
+          this.external = JSON.parse(theData);
+        } else {
+          this.external = null;
+        }
+        return this.external;
+      },
+
+      /**
+       * convert the value from internal to external representation when ready
+       */
+      ready: function() {
+        this.get();
+        console.log("ready ");
+      },
+
+    });
+  </script>
+</dom-module>
