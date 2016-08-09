@@ -18,6 +18,10 @@
     "go": "go!",
     "todwd": "to DWD homepage",
     "searchfor": "searching for",
+    "name": "Name",
+    "lastchange": "Last change",
+    "slmgmt": "Shopping lists",
+    "slmgmthint": "Create a new list with + - edit or copy existing lists as you like.",
 
     "hello": "Hello {name}.",
     "header_1": "Translation and localization",
@@ -46,6 +50,10 @@
     "go": "Los!",
     "todwd": "zur DWD Startseite",
     "searchfor": "Suche nach",
+    "name": "Name",
+    "lastchange": "Letzte Änderung",
+    "slmgmt": "Einkaufslisten",
+    "slmgmthint": "Neue Liste anlegen mit + - bestehende Listen können bearbeitet oder kopiert werden.",
 
 
     "hello": "Hallo {name}.",
