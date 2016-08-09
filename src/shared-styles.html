@@ -17,6 +17,54 @@
         color: var(--app-text-color-bright);
         background-color: var(--app-primary-color);
       }
+      h1 {
+        font-size: 22px;
+        margin: 16px 0;
+        color: #212121;
+      }
+
+      iron-data-table data-table-row:not([header]) data-table-cell {
+        height: 3.5rem;
+      }
+
+      iron-data-table {
+        --default-primary-color: var(--app-primary-color);
+        --iron-data-table-header: {
+          background-color: var(--app-primary-color);
+          color: var(--app-text-color-bright);
+        }
+        --iron-data-table-row: {
+          height: 3.5rem;
+          align-items: center;
+        }
+        --iron-data-table-row-odd: {
+          background-color: #fff;
+        }
+        --iron-data-table-row-even: {
+          background-color: #fafafa;
+        }
+        --iron-data-table-row-hover: {
+          background-color: #eee !important;
+        }
+        --iron-data-table-row-selected: {
+          background-color: var(--app-addon-color1) !important;
+          color: #fff;
+        }
+        --iron-data-table-row-after: {
+          background-color: #fff;
+          bottom: 16px;
+          content: "";
+          height: 2px;
+          left: 13px;
+          pointer-events: none;
+          position: absolute;
+          right: 0px;
+          transition: all 1s ease-in-out;
+          -webkit-transform: scaleX(0.0);
+          transform: scaleX(0.0);
+          z-index: 1;
+        }
+      }
 
     </style>
   </template>

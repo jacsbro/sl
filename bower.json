@@ -24,7 +24,8 @@
     "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
     "iron-image": "PolymerElements/iron-image#^1.2.3",
     "paper-tooltip": "PolymerElements/paper-tooltip#^1.1.2",
-    "app-storage": "PolymerElements/app-storage#^0.9.4"
+    "app-storage": "PolymerElements/app-storage#^0.9.4",
+    "iron-data-table": "^1.0.1"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
