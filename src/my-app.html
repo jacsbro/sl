@@ -1,0 +1,192 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+
+<link rel="import" href="my-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-app">
+
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+
+      :host {
+        display: block;
+
+        /* sg page 6 */
+        --app-primary-color: #2D4B9B;
+        --app-secondary-color: #EEEEEE;
+        --app-secondary-color-bright: #FFFFFF;
+        --app-background-color: #FFFFFF;
+        --app-border-color: #c7c3c3;
+        --app-addon-color1: #96B9DC;
+        --app-alert-color: #E10019;
+        --app-text-color-light: #555555;
+        --app-text-color-dark: #333333;
+        --app-text-color-bright: #FFFFFF;
+        /* sg page 7 */
+        --app-text-color-header: #555555;
+        --app-font-size-h1: 3rem;
+        --app-font-size-h2: 2.2rem;
+        --app-font-size-h3: 1.7rem;
+        --app-font-size-h4: 1.4rem;
+        /* sg page 29 */
+        --app-font-size-mainnav: 1.5rem;
+        --app-font-size-metanav: 0.9rem;
+
+        /* other ones */
+        --app-font-size-small: 0.5rem;
+      }
+
+      /* primary toolbar */
+      app-toolbar {
+        background-color: var(--app-primary-color);
+        color: var(--app-text-color-bright);
+        font-size: var(--app-font-size-metanav);
+        height: 50px;
+      }
+
+    </style>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
+
+    <!-- check horizontal resolution -->
+    <iron-media-query query="(min-width: 720px)" query-matches="{{_wideScreen}}"></iron-media-query>
+
+    <!-- url bar and route TODO: this should be fixed to reflect the state
+    <app-location id="applocation" route="{{page}}"></app-location>
+    -->
+    <app-route
+        route="{{page}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+
+    <app-drawer-layout fullbleed force-narrow='true'>
+
+      <app-drawer>
+      </app-drawer>
+
+      <!-- Main content -->
+      <app-header-layout has-scrolling-region>
+        <app-header id='myapp_header' fixed>
+
+          <app-toolbar class="tall container flex-horizontal" primary>
+            <div class="flex-1"><paper-button id='myapp_imprint' on-tap='_showImprint'>{{localize('imprint')}}</paper-button></div>
+            <paper-tooltip for="myapp_imprint" position="bottom">{{localize('imprinttt')}}</paper-tooltip>
+
+            <div class="flex-1"><paper-button id='myapp_contact' on-tap='_showContact'>{{localize('contact')}}</paper-button></div>
+            <paper-tooltip for="myapp_contact" position="bottom">{{localize('contacttt')}}</paper-tooltip>
+
+            <div class="flex-1"><paper-button id='myapp_langtoggle' on-tap='_toggleLocale'>{{_getLocale()}}</paper-button></div>
+            <paper-tooltip for="myapp_langtoggle" position="bottom">{{localize('togglelocalett')}}</paper-tooltip>
+
+            <div class="flex-7"><cdc-breadcrumb id='myapp_cdcbreadcrumb' view="{{page}}"></cdc-breadcrumb></div>
+
+            <div class="flex-1 searchbutton" id='myapp_searchbutton' ><paper-icon-button icon="search" on-tap="_searchPressed"></paper-icon-button></div>
+            <paper-tooltip for="myapp_searchbutton" position="bottom">{{localize('searchfieldtt')}}</paper-tooltip>
+          </app-toolbar>
+        </app-header>
+
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+          <my-view1 name="view1"></my-view1>
+        </iron-pages>
+
+      </app-header-layout>
+
+      <paper-toast id="apptoast"></paper-toast>
+    </app-drawer-layout>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'my-app',
+
+      properties: {
+
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged'
+        },
+      },
+
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+
+      observers: [
+        '_routePageChanged(routeData.page)'
+      ],
+
+      _routePageChanged: function(page) {
+        this.page = page || 'view1';
+      },
+
+      _pageChanged: function(page) {
+        // load page import on demand.
+        this.importHref(
+          this.resolveUrl('my-' + page + '.html'), null, null, true);
+      },
+
+      /**
+       * triggers search
+       */
+      _searchPressed: function() {
+
+      },
+
+      /**
+       * get text for locale toggle button
+       */
+      _getLocale: function() {
+        var lang = this.language;
+        if (lang === undefined) {
+          lang = navigator.language || navigator.browserLanguage || navigator.userLanguage || navigator.systemLanguage;
+        }
+        return lang != undefined && lang.startsWith('en') ? 'de' : 'en';
+      },
+
+      /**
+       * toggles the current locale
+       */
+      _toggleLocale: function() {
+        var oldLang = this.language;
+        var newLang = this.language == 'en' ? 'de' : 'en';
+        this.$.myapp_langtoggle.innerHTML = oldLang;
+        app.I18Ntoggle(newLang);
+      },
+
+      /**
+       * i18n
+       */
+      attached: function() {
+        app.I18Nregister(this);
+      },
+    });
+
+  </script>
+
+</dom-module>

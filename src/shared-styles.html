@@ -1,0 +1,23 @@
+<!-- shared-styles.html -->
+<dom-module id="shared-styles">
+  <template>
+    <style>
+      /* just4test */
+      .red { color: red; }
+      /* styleguide proposes 990 with 15px space left/right. if we **really** want this we need to set a fix width or max-width. */
+      .desktop {
+        width:960px;
+        padding-left: 15px;
+        padding-right: 15px;
+        margin: auto;
+        overflow: hidden;
+      }
+
+      paper-button {
+        color: var(--app-text-color-bright);
+        background-color: var(--app-primary-color);
+      }
+
+    </style>
+  </template>
+</dom-module>
