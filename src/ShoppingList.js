@@ -1,3 +1,16 @@
+//////////////////////////////////////////////////////////////////////////////
+// version of the data structure
+var SL_VERSION = 1;
+
+// units
+var UNIT_ST = 0;
+var UNIT_G = 1;
+var UNIT_L = 2;
+var UNIT_M = 3;
+
+var UNITS = ["ST", "g", "l", "m"];
+
+//////////////////////////////////////////////////////////////////////////////
 // guid function
 function guid() {
   function s4() {
@@ -17,6 +30,7 @@ function ShoppingList(aName) {
   this.created = new Date();
   this.modified = new Date();
   this.items = [];
+  this.version = SL_VERSION;
 };
 
 ShoppingList.prototype.addItem = function(aItem) {
@@ -39,4 +53,5 @@ function ShoppingListItem(aName, aUnit, aQty) {
   this.unit = aUnit;
   this.qty = aQty;
   this.done = false;
+  this.needed = "true";
 };
