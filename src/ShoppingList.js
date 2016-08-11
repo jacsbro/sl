@@ -45,7 +45,9 @@ ShoppingList.prototype.deleteItem = function(aItem) {
   }
   this.modified = new Date();
 };
-
+ShoppingList.prototype.modifiedDisplay = function() {
+  return this.modified;
+};
 
 function ShoppingListItem(aName, aUnit, aQty) {
   this.id = guid();

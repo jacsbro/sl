@@ -10,10 +10,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<!--
 <link rel="import" href="../bower_components/iron-data-table/iron-data-table.html">
+-->
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="sl-store.html">
 
@@ -43,14 +46,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-top: 2rem;
       }
 
-      .name {
-        font-size: var(--app-font-size-metanav);
-      }
-
-      .date {
-        font-size: var(--app-font-size-small);
-      }
-
     </style>
     <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
 
@@ -63,6 +58,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-fab mini class="margin" icon="add"></paper-fab>
       </div>
 
+      <template is="dom-repeat" items="{{documents}}">
+        <paper-radio-button on-change="_radioClicked" id="[[item.shortName]]" name="[[index]]">[[item.shortName]]</paper-radio-button>
+        <paper-tooltip for="[[item.shortName]]" position="bottom" offset="3">[[item.descriptionDe]]</paper-tooltip>
+
+        <paper-card class="margin">
+          <div class="card-content">
+            <div class="bold">[[item.name]]</div>
+            <div>{{localize('lastchange')}} : {{_toDate(item.modified)}}</div>
+            <div>{{localize('itemcount')}} : [[item.items.length]]</div>
+          </div>
+          <div class="card-actions">
+            <paper-button id="[[item.id]]" on-tap="_editPressed">{{localize('edit')}}</paper-button>
+            <paper-button id="[[item.id]]" on-tap="_copyPressed">{{localize('copy')}}</paper-button>
+            <paper-button id="[[item.id]]" on-tap="_deletePressed">{{localize('delete')}}</paper-button>
+          </div>
+        </paper-card>
+
+      </template>
+
+
+
+
+<!--
       <iron-data-table class="margin" items="[[documents]]" >
 
         <data-table-column name="{{localize('name')}}" flex="4" sort-by="name">
@@ -90,6 +108,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
       </iron-data-table>
+-->
 
     </div>
 
@@ -115,6 +134,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        */
       _copyPressed: function(data) {
         console.log("copy " + data.target.id);
+      },
+      /**
+       * converts date for display
+       */
+      _toDate: function(date) {
+        if (date && !(date instanceof Date)) {
+          var theDateMillies = Date.parse(date);
+          if (theDateMillies && theDateMillies !== NaN) {
+            date = new Date(theDateMillies);
+          }
+        }
+        if (date && date instanceof Date) {
+          return date.toLocaleDateString(app.language);
+        }
+        return "";
       },
 
       // load localized messages

@@ -20,9 +20,13 @@
     "searchfor": "searching for",
     "name": "Name",
     "lastchange": "Last change",
+    "itemcount": "Number of articles",
     "slmgmt": "Your shopping lists",
     "slmgmthint": "Create a new list with +, edit, copy or delete existing lists as you like.",
     "actions": "Actions",
+    "edit": "Edit",
+    "copy": "Copy",
+    "delete": "Delete",
 
     "hello": "Hello {name}.",
     "header_1": "Translation and localization",
@@ -53,9 +57,13 @@
     "searchfor": "Suche nach",
     "name": "Name",
     "lastchange": "Letzte Änderung",
+    "itemcount": "Anzahl Artikel",
     "slmgmt": "Deine Einkaufslisten",
     "slmgmthint": "Neue Liste anlegen mit +, bestehende Listen können bearbeitet, kopiert oder gelöscht werden.",
     "actions": "Aktionen",
+    "edit": "Ändern",
+    "copy": "Kopier..",
+    "delete": "Lösch..",
 
 
     "hello": "Hallo {name}.",
