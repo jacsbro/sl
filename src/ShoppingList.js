@@ -55,5 +55,5 @@ function ShoppingListItem(aName, aUnit, aQty) {
   this.unit = aUnit;
   this.qty = aQty;
   this.done = false;
-  this.needed = "true";
+  this.needed = true;
 };

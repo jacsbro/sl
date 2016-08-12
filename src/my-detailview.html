@@ -17,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 
 <dom-module id="my-detailview">
 
@@ -46,10 +47,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="card">
       <paper-input label="{{localize('name')}}" value="{{data.currentList.name}}"></paper-input>
+
+      <div class="layout horizontal">
+        <paper-toggle-button checked="{{_isViewmodeDetail}}">{{localize('viewmode')}}</paper-toggle-button>
+        <paper-toggle-button checked="{{_isNeededmode}}">{{localize('neededmode')}}</paper-toggle-button>
+        <paper-toggle-button checked="{{_isCompletedmode}}">{{localize('completedmode')}}</paper-toggle-button>
+      </div>
       <template is="dom-repeat" items="{{data.currentList.items}}">
 
-        <paper-card class="margin">
-          <div class="card-content">
+        <paper-card class="margin" hidden$="{{_isFiltered(_isNeededmode, _isCompletedmode, index)}}">
+          <!-- content in detail mode -->
+          <div class="card-content" hidden$="{{!_isViewmodeDetail}}">
             <paper-input label="{{localize('article')}}" value="{{item.name}}"></paper-input>
             <div class="layout horizontal around-justified">
               <paper-input label="{{localize('quantity')}}" value="{{item.qty}}" type="number"></paper-input>
@@ -60,7 +68,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-checkbox value="{{item.done}}">{{localize('done')}}</paper-checkbox>
             </div>
           </div>
-          <div class="card-actions">
+          <!-- content in brief mode -->
+          <div class="card-content" hidden$="{{_isViewmodeDetail}}">
+            <paper-input label="{{localize('article')}}" value="{{item.name}}"></paper-input>
+            <div class="layout horizontal around-justified">
+              <paper-checkbox checked="{{item.needed}}">{{localize('needed')}}</paper-checkbox>
+              <paper-checkbox checked="{{item.done}}">{{localize('done')}}</paper-checkbox>
+            </div>
+          </div>
+
+          <!-- actions visible in detail mode -->
+          <div class="card-actions" hidden$="{{!_isViewmodeDetail}}">
             <div class="layout horizontal around-justified">
               <div><paper-icon-button id="[[item.id]]" icon="add" on-tap="_addPressed"></paper-icon-button></div>
               <div hidden$="{{_isFirst(index)}}"><paper-icon-button id="[[item.id]]" icon="arrow-upward" on-tap="_upPressed"></paper-icon-button></div>
@@ -82,10 +100,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-detailview',
 
       properties: {
-
+        // data we're bound to
         data: {
           type: Object,
           notify: true
+        },
+        // true if details should be displayed
+        _isViewmodeDetail: {
+          type: Boolean,
+          value: true
+        },
+        // true if only needed should be displayed
+        _isNeededmode: {
+          type: Boolean,
+          value: false
+        },
+        // true if completed should be hidden
+        _isCompletedmode: {
+          type: Boolean,
+          value: false
         },
       },
 
@@ -107,6 +140,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        */
       _isLast: function(index) {
         if (index === this.data.currentList.items.length-1) {
+          return true;
+        }
+        return false;
+      },
+      /**
+       * return true if this is filtered due to displaymode settings
+       */
+      _isFiltered: function(neededMode, completeMode, index) {
+        var theItem = this.data.currentList.items[index];
+        var isFiltered = false;
+        if (this._isNeededmode && theItem.needed == false) {
+          return true;
+        }
+        if (this._isCompletedmode && theItem.done == true) {
           return true;
         }
         return false;
@@ -164,7 +211,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
       },
-
       // load localized messages
       attached: function() {
         app.I18Nregister(this);

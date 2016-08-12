@@ -100,8 +100,6 @@
             <div class="flex-1"><paper-button id='myapp_langtoggle' on-tap='_toggleLocale'>{{_getLocale()}}</paper-button></div>
             <paper-tooltip for="myapp_langtoggle" position="bottom">{{localize('togglelocalett')}}</paper-tooltip>
 
-            <div class="flex-7"><cdc-breadcrumb id='myapp_cdcbreadcrumb' view="{{page}}"></cdc-breadcrumb></div>
-
             <div class="flex-1 searchbutton" id='myapp_searchbutton' ><paper-icon-button icon="search" on-tap="_searchPressed"></paper-icon-button></div>
             <paper-tooltip for="myapp_searchbutton" position="bottom">{{localize('searchfieldtt')}}</paper-tooltip>
           </app-toolbar>

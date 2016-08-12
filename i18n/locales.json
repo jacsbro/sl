@@ -32,6 +32,9 @@
     "quantity": "Quantity",
     "needed": "needed",
     "done": "done",
+    "viewmode": "Show details",
+    "neededmode": "Show needed only",
+    "completedmode": "Hide completed",
 
     "hello": "Hello {name}.",
     "header_1": "Translation and localization",
@@ -74,6 +77,9 @@
     "quantity": "Menge",
     "needed": "Benötigt",
     "done": "Erledigt",
+    "viewmode": "Details anzeigen",
+    "neededmode": "Nur benötigte anzeigen",
+    "completedmode": "Erledigte ausblenden",
 
 
     "hello": "Hallo {name}.",
