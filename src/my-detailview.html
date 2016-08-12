@@ -95,6 +95,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       behaviors: [
         Polymer.AppLocalizeBehavior
       ],
+      /**
+       * triggers down
+       */
+      _downPressed: function(data) {
+        var theItems = this.data.currentList.items;
+        for( var i=0; i<theItems.length;i++) {
+          if(theItems[i].id === data.target.id && i < theItems.length - 2) {
+            var tmp = theItems[i+1];
+            theItems[i+1] = theItems[i];
+            theItems[i] = tmp;
+            this.notifyPath('data.currentList.items', this.data.currentList.items);
+            return;
+          }
+        }
+      },
 
       // load localized messages
       attached: function() {
