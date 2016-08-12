@@ -46,11 +46,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="card">
       <paper-input label="{{localize('name')}}" value="{{data.currentList.name}}"></paper-input>
-      <div class="layout horizontal center-justified">
-        <paper-fab mini class="margin" icon="add"></paper-fab>
-      </div>
-
       <template is="dom-repeat" items="{{data.currentList.items}}">
+
         <paper-card class="margin">
           <div class="card-content">
             <paper-input label="{{localize('article')}}" value="{{item.name}}"></paper-input>
@@ -66,8 +63,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div class="card-actions">
             <div class="layout horizontal around-justified">
               <div><paper-icon-button id="[[item.id]]" icon="add" on-tap="_addPressed"></paper-icon-button></div>
-              <div><paper-icon-button id="[[item.id]]" icon="arrow-upward" on-tap="_upPressed"></paper-icon-button></div>
-              <div><paper-icon-button id="[[item.id]]" icon="arrow-downward" on-tap="_downPressed"></paper-icon-button></div>
+              <div hidden$="{{_isFirst(index)}}"><paper-icon-button id="[[item.id]]" icon="arrow-upward" on-tap="_upPressed"></paper-icon-button></div>
+              <div hidden$="{{_isLast(index)}}"><paper-icon-button id="[[item.id]]" icon="arrow-downward" on-tap="_downPressed"></paper-icon-button></div>
               <div><paper-icon-button id="[[item.id]]" icon="delete" on-tap="_deletePressed"></paper-icon-button></div>
             </div>
           </div>
@@ -95,17 +92,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       behaviors: [
         Polymer.AppLocalizeBehavior
       ],
+
+      /**
+       * return true if this is the first item to render
+       */
+      _isFirst: function(index) {
+        if (index === 0) {
+          return true;
+        }
+        return false;
+      },
+      /**
+       * return true if this is the last item to render
+       */
+      _isLast: function(index) {
+        if (index === this.data.currentList.items.length-1) {
+          return true;
+        }
+        return false;
+      },
       /**
        * triggers down
        */
       _downPressed: function(data) {
         var theItems = this.data.currentList.items;
         for( var i=0; i<theItems.length;i++) {
-          if(theItems[i].id === data.target.id && i < theItems.length - 2) {
-            var tmp = theItems[i+1];
-            theItems[i+1] = theItems[i];
-            theItems[i] = tmp;
-            this.notifyPath('data.currentList.items', this.data.currentList.items);
+          if(theItems[i].id === data.target.id && i < theItems.length - 1) {
+            var oldLow = theItems[i];
+            var oldHigh = theItems[i+1];
+            this.splice('data.currentList.items', i, 2, oldHigh, oldLow);
+            return;
+          }
+        }
+      },
+      /**
+       * triggers up
+       */
+      _upPressed: function(data) {
+        var theItems = this.data.currentList.items;
+        for( var i=0; i<theItems.length;i++) {
+          if(theItems[i].id === data.target.id && i > 0) {
+            var oldLow = theItems[i-1];
+            var oldHigh = theItems[i];
+            this.splice('data.currentList.items', i-1, 2, oldHigh, oldLow);
             return;
           }
         }
