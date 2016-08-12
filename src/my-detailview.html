@@ -112,7 +112,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return false;
       },
       /**
-       * triggers down
+       * add
+       */
+      _addPressed: function(data) {
+        var theItems = this.data.currentList.items;
+        for( var i=0; i<theItems.length;i++) {
+          if(theItems[i].id === data.target.id) {
+            var theNew = new ShoppingListItem("", UNIT_ST, 1);
+            this.splice('data.currentList.items', i+1, 0, theNew);
+            return;
+          }
+        }
+      },
+      /**
+       * delete
+       */
+      _deletePressed: function(data) {
+        var theItems = this.data.currentList.items;
+        for( var i=0; i<theItems.length;i++) {
+          if(theItems[i].id === data.target.id) {
+            this.splice('data.currentList.items', i, 1);
+            return;
+          }
+        }
+      },
+      /**
+       * down
        */
       _downPressed: function(data) {
         var theItems = this.data.currentList.items;
@@ -126,7 +151,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
       /**
-       * triggers up
+       * up
        */
       _upPressed: function(data) {
         var theItems = this.data.currentList.items;
