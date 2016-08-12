@@ -27,6 +27,11 @@
     "edit": "Edit",
     "copy": "Copy",
     "delete": "Delete",
+    "article": "Article",
+    "unit": "Unit",
+    "quantity": "Quantity",
+    "needed": "needed",
+    "done": "done",
 
     "hello": "Hello {name}.",
     "header_1": "Translation and localization",
@@ -64,6 +69,11 @@
     "edit": "Ändern",
     "copy": "Kopier..",
     "delete": "Lösch..",
+    "article": "Artikel",
+    "unit": "Einheit",
+    "quantity": "Menge",
+    "needed": "Benötigt",
+    "done": "Erledigt",
 
 
     "hello": "Hallo {name}.",

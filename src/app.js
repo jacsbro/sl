@@ -133,5 +133,14 @@
     app.page = aPage;
   }
 
+  // holds the current list
+  app.setDetailView = function(mode, aList) {
+    app.page = 'detailview';
+    app.detailViewData = {
+      currentListMode: mode,
+      currentList: aList
+    };
+  }
+
 
 })(document);

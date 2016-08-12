@@ -10,17 +10,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
-<!--
-<link rel="import" href="../bower_components/iron-data-table/iron-data-table.html">
--->
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="sl-store.html">
 
-<dom-module id="my-view1">
+<dom-module id="my-detailview">
 
   <template>
     <style include="shared-styles"></style>
@@ -34,9 +32,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .card {
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         padding: 16px;
-        /* avoid huge inner block - save space
-        margin: 24px;
-        */
         border-radius: 5px;
         background-color: var(--app-background-color);
         color: var(--app-text-color-light);
@@ -49,26 +44,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
 
-    <sl-store id="myapp_sl" external="{{documents}}"></sl-store>
-
     <div class="card">
-      <h1>{{localize('slmgmt')}}</h1>
-      <div>{{localize('slmgmthint')}}</div>
+      <paper-input label="{{localize('name')}}" value="{{data.currentList.name}}"></paper-input>
       <div class="layout horizontal center-justified">
         <paper-fab mini class="margin" icon="add"></paper-fab>
       </div>
 
-      <template is="dom-repeat" items="{{documents}}">
+      <template is="dom-repeat" items="{{data.currentList.items}}">
         <paper-card class="margin">
           <div class="card-content">
-            <div class="bold">[[item.name]]</div>
-            <div>{{localize('lastchange')}} : {{_toDate(item.modified)}}</div>
-            <div>{{localize('itemcount')}} : [[item.items.length]]</div>
+            <paper-input label="{{localize('article')}}" value="{{item.name}}"></paper-input>
+            <div class="layout horizontal around-justified">
+              <paper-input label="{{localize('quantity')}}" value="{{item.qty}}" type="number"></paper-input>
+              <paper-input label="{{localize('unit')}}" value="{{item.unit}}" type="number"></paper-input>
+            </div>
+            <div class="layout horizontal around-justified">
+              <paper-checkbox value="{{item.needed}}">{{localize('needed')}}</paper-checkbox>
+              <paper-checkbox value="{{item.done}}">{{localize('done')}}</paper-checkbox>
+            </div>
           </div>
           <div class="card-actions">
             <div class="layout horizontal around-justified">
-              <div><paper-icon-button id="[[item.id]]" icon="create" on-tap="_editPressed"></paper-icon-button></div>
-              <div><paper-icon-button id="[[item.id]]" icon="content-copy" on-tap="_copyPressed"></paper-icon-button></div>
+              <div><paper-icon-button id="[[item.id]]" icon="add" on-tap="_addPressed"></paper-icon-button></div>
+              <div><paper-icon-button id="[[item.id]]" icon="arrow-upward" on-tap="_upPressed"></paper-icon-button></div>
+              <div><paper-icon-button id="[[item.id]]" icon="arrow-downward" on-tap="_downPressed"></paper-icon-button></div>
               <div><paper-icon-button id="[[item.id]]" icon="delete" on-tap="_deletePressed"></paper-icon-button></div>
             </div>
           </div>
@@ -83,67 +82,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     Polymer({
 
-      is: 'my-view1',
+      is: 'my-detailview',
+
+      properties: {
+
+        data: {
+          type: Object,
+          notify: true
+        },
+      },
 
       behaviors: [
         Polymer.AppLocalizeBehavior
       ],
-      /**
-       * triggers edit
-       */
-      _editPressed: function(data) {
-        var theCurrentList = this._getCurrentList(data.target.id);
-        if (theCurrentList) {
-          app.setDetailView('edit', theCurrentList);
-        }
-      },
-      /**
-       * triggers copy
-       */
-      _copyPressed: function(data) {
-        var theCurrentList = this._getCurrentList(data.target.id);
-        if (theCurrentList) {
-          app.setDetailView('copy', theCurrentList);
-        }
-      },
-      /**
-       * triggers delete
-       */
-      _deletePressed: function(data) {
-        var theCurrentList = this._getCurrentList(data.target.id);
-        if (theCurrentList) {
-          app.setDetailView('delete', theCurrentList);
-        }
-      },
-
-      /**
-       * sets the current list to edit globally in the app
-       */
-      _getCurrentList: function(id) {
-        var theDocs = this.$.myapp_sl.external;
-        for( var i=0; i<theDocs.length;i++) {
-          if(theDocs[i].id === id) {
-            return theDocs[i];
-          }
-        }
-        return null;
-      },
-
-      /**
-       * converts date for display
-       */
-      _toDate: function(date) {
-        if (date && !(date instanceof Date)) {
-          var theDateMillies = Date.parse(date);
-          if (theDateMillies && theDateMillies !== NaN) {
-            date = new Date(theDateMillies);
-          }
-        }
-        if (date && date instanceof Date) {
-          return date.toLocaleDateString(app.language);
-        }
-        return "";
-      },
 
       // load localized messages
       attached: function() {
@@ -152,7 +103,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       ready: function() {
         console.log("ready ");
-        this.$.myapp_sl.get();
       },
     });
 
