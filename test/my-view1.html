@@ -18,10 +18,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../bower_components/web-component-tester/browser.js"></script>
 
   <!-- Import the element to test -->
+  <link rel="import" href="../src/my-app.html">
   <link rel="import" href="../src/my-view1.html">
 
 </head>
 <body>
+  <my-app id="app"></my-app>
+  <script src="../src/app.js"></script>
+  <script src="../src/ShoppingList.js"></script>
 
   <test-fixture id="basic">
     <template>

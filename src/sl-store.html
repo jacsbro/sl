@@ -36,6 +36,11 @@
         this.set('internal', JSON.stringify(this.external));
       },
 
+      addList: function(aList) {
+        this.splice('external', 0, 0, aList);
+        this.save();
+      },
+
       /**
        * get the current value from storage
        */
@@ -56,7 +61,8 @@
           theData = theData.replace(/\\/g, "");
           this.external = JSON.parse(theData);
         } else {
-          this.external = null;
+          this.external = new Array(0);
+          this.addList(new ShoppingList(app.toDate(new Date())));
         }
         return this.external;
       },

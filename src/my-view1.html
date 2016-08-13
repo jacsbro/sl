@@ -55,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <h1>{{localize('slmgmt')}}</h1>
       <div>{{localize('slmgmthint')}}</div>
       <div class="layout horizontal center-justified">
-        <paper-fab mini class="margin" icon="add"></paper-fab>
+        <paper-fab mini class="margin" icon="add" on-tap="_addPressed"></paper-fab>
       </div>
 
       <template is="dom-repeat" items="{{documents}}">
@@ -88,6 +88,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       behaviors: [
         Polymer.AppLocalizeBehavior
       ],
+      /**
+       * triggers add
+       */
+      _addPressed: function() {
+        var theDocs = this.$.myapp_sl.external;
+        var theNew = new ShoppingList(this._toDate(new Date()));
+        this.$.myapp_sl.addList(theNew);
+        var theCurrentList = this._getCurrentList(theNew.id);
+        if (theCurrentList) {
+          app.setDetailView('add', theCurrentList);
+        }
+      },
       /**
        * triggers edit
        */

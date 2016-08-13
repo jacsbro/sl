@@ -125,6 +125,21 @@
   };
 
   //////////////////////////////////////////////////////////////////////////////
+  // Helper functions
+  app.toDate = function(date) {
+    if (date && !(date instanceof Date)) {
+      var theDateMillies = Date.parse(date);
+      if (theDateMillies && theDateMillies !== NaN) {
+        date = new Date(theDateMillies);
+      }
+    }
+    if (date && date instanceof Date) {
+      return date.toLocaleDateString(app.language);
+    }
+    return "";
+  }
+  
+  //////////////////////////////////////////////////////////////////////////////
   // Global application state
 
   // holds the current page

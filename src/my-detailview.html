@@ -72,6 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div class="card-content" hidden$="{{_isViewmodeDetail}}">
             <paper-input label="{{localize('article')}}" value="{{item.name}}"></paper-input>
             <div class="layout horizontal around-justified">
+              <!-- TODO problem binding to boolean - use Boolean? -->
               <paper-checkbox checked="{{item.needed}}">{{localize('needed')}}</paper-checkbox>
               <paper-checkbox checked="{{item.done}}">{{localize('done')}}</paper-checkbox>
             </div>
