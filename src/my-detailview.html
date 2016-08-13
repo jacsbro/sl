@@ -48,7 +48,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-toolbar class="toolbar2">
       <paper-icon-button icon="menu" on-tap="_menuPressedOn"></paper-icon-button>
       <paper-icon-button icon="add" on-tap="_addPressed2"></paper-icon-button>
-      <paper-icon-button icon="save" on-tap="_savePressed"></paper-icon-button>
+      <template is="dom-if" if="[[_isSaveNeeded]]">
+        <paper-icon-button icon="save" on-tap="_savePressed"></paper-icon-button>
+      </template>
+
     </app-toolbar>
 
     <div class="card" hidden$="{{!_isMenumode}}">
@@ -152,6 +155,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: false
         },
+        // true if user should save
+        _isSaveNeeded: {
+          type: Boolean,
+          value: false
+        },
       },
 
       behaviors: [
@@ -208,6 +216,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _newItem: function(index) {
         var theNew = new ShoppingListItem("", UNIT_ST, 1);
         this.splice('data.currentList.items', index, 0, theNew);
+        this._saveNeeded(true);
       },
 
       /**
@@ -218,6 +227,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         for( var i=0; i<theItems.length;i++) {
           if(theItems[i].id === data.target.id) {
             this.splice('data.currentList.items', i, 1);
+            this._saveNeeded(true);
             return;
           }
         }
@@ -232,6 +242,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var oldLow = theItems[i];
             var oldHigh = theItems[i+1];
             this.splice('data.currentList.items', i, 2, oldHigh, oldLow);
+            this._saveNeeded(true);
             return;
           }
         }
@@ -246,6 +257,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var oldLow = theItems[i-1];
             var oldHigh = theItems[i];
             this.splice('data.currentList.items', i-1, 2, oldHigh, oldLow);
+            this._saveNeeded(true);
             return;
           }
         }
@@ -265,6 +277,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        */
       _savePressed: function() {
         this.data.slstore.save();
+        this._saveNeeded(false);
+      },
+
+      _saveNeeded: function(b) {
+        this.set('_isSaveNeeded', b);
       },
 
       // load localized messages

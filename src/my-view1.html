@@ -51,12 +51,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <sl-store id="myapp_sl" external="{{documents}}"></sl-store>
 
+    <app-toolbar class="toolbar2">
+      <paper-icon-button icon="add" on-tap="_addPressed"></paper-icon-button>
+    </app-toolbar>
+
     <div class="card">
       <h1>{{localize('slmgmt')}}</h1>
       <div>{{localize('slmgmthint')}}</div>
-      <div class="layout horizontal center-justified">
-        <paper-fab mini class="margin" icon="add" on-tap="_addPressed"></paper-fab>
-      </div>
 
       <template is="dom-repeat" items="{{documents}}">
         <paper-card class="margin">
