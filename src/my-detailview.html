@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
@@ -17,7 +18,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 
 <dom-module id="my-detailview">
 
@@ -45,14 +45,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
 
-    <div class="card">
+    <app-toolbar class="toolbar2">
+      <paper-icon-button icon="menu" on-tap="_menuPressedOn"></paper-icon-button>
+      <paper-icon-button icon="add" on-tap="_addPressed2"></paper-icon-button>
+      <paper-icon-button icon="save" on-tap="_savePressed"></paper-icon-button>
+    </app-toolbar>
+
+    <div class="card" hidden$="{{!_isMenumode}}">
+      <paper-checkbox checked="{{_isViewmodeDetail}}" class="options">
+        {{localize('viewmode')}}
+        <span class="subtitle">
+          {{localize('viewmodehint')}}
+        </span>
+      </paper-checkbox>
+      <paper-checkbox checked="{{_isNeededmode}}" class="options">
+        {{localize('neededmode')}}
+        <span class="subtitle">
+          {{localize('neededmodehint')}}
+        </span>
+      </paper-checkbox>
+      <paper-checkbox checked="{{_isCompletedmode}}" class="options">
+        {{localize('completedmode')}}
+        <span class="subtitle">
+          {{localize('completedmodehint')}}
+        </span>
+      </paper-checkbox>
+
+      <div class="layout horizontal around-justified margin">
+        <paper-button on-tap="_menuPressedOff">OK</paper-button>
+      </div>
+    </div>
+
+    <div class="card" hidden$="{{_isMenumode}}">
       <paper-input label="{{localize('name')}}" value="{{data.currentList.name}}"></paper-input>
 
-      <div class="layout horizontal">
-        <paper-toggle-button checked="{{_isViewmodeDetail}}">{{localize('viewmode')}}</paper-toggle-button>
-        <paper-toggle-button checked="{{_isNeededmode}}">{{localize('neededmode')}}</paper-toggle-button>
-        <paper-toggle-button checked="{{_isCompletedmode}}">{{localize('completedmode')}}</paper-toggle-button>
-      </div>
       <template is="dom-repeat" items="{{data.currentList.items}}">
 
         <paper-card class="margin" hidden$="{{_isFiltered(_isNeededmode, _isCompletedmode, index)}}">
@@ -105,6 +131,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         data: {
           type: Object,
           notify: true
+        },
+        // true if we are in menumode
+        _isMenumode: {
+          type: Boolean,
+          value: false
         },
         // true if details should be displayed
         _isViewmodeDetail: {
@@ -166,12 +197,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var theItems = this.data.currentList.items;
         for( var i=0; i<theItems.length;i++) {
           if(theItems[i].id === data.target.id) {
-            var theNew = new ShoppingListItem("", UNIT_ST, 1);
-            this.splice('data.currentList.items', i+1, 0, theNew);
+            this._newItem(i+1);
             return;
           }
         }
       },
+      _addPressed2: function(data) {
+        this._newItem(0);
+      },
+      _newItem: function(index) {
+        var theNew = new ShoppingListItem("", UNIT_ST, 1);
+        this.splice('data.currentList.items', index, 0, theNew);
+      },
+
       /**
        * delete
        */
@@ -212,6 +250,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
       },
+      /**
+       * menumode on/off
+       */
+      _menuPressedOn: function() {
+        this._isMenumode = true;
+      },
+      _menuPressedOff: function() {
+        this._isMenumode = false;
+      },
+
+      /**
+       * save
+       */
+      _savePressed: function() {
+        this.data.slstore.save();
+      },
+
       // load localized messages
       attached: function() {
         app.I18Nregister(this);

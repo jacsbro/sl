@@ -33,8 +33,11 @@
     "needed": "needed",
     "done": "done",
     "viewmode": "Show details",
+    "viewmodehint": "when off we show less details",
     "neededmode": "Show needed only",
+    "neededmodehint": "when on we only display articles marked as needed",
     "completedmode": "Hide completed",
+    "completedmodehint": "when on we hide articles marked as completed",
 
     "hello": "Hello {name}.",
     "header_1": "Translation and localization",
@@ -78,8 +81,11 @@
     "needed": "Benötigt",
     "done": "Erledigt",
     "viewmode": "Details anzeigen",
+    "viewmodehint": "Artikeldetails ein- bzw. ausblenden",
     "neededmode": "Nur benötigte anzeigen",
+    "neededmodehint": "Nicht benötigte Artikel verbergen bzw. anzeigen",
     "completedmode": "Erledigte ausblenden",
+    "completedmodehint": "Erledigte Artikel verbergen bzw. anzeigen",
 
 
     "hello": "Hallo {name}.",

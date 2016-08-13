@@ -17,6 +17,12 @@
         font-weight: bold;
       }
 
+      .toolbar2 {
+        color: var(--app-primary-color);
+        background-color: var(--app-background-color);
+        border-bottom: 1px solid var(--app-primary-color);
+      }
+
       paper-button {
         color: var(--app-text-color-bright);
         background-color: var(--app-primary-color);
@@ -76,6 +82,20 @@
         --paper-fab-keyboard-focus-background: var(--app-addon-color1);
       }
 
+      paper-checkbox.options {
+          align-self: center;
+          padding: 8px 16px;
+
+          --paper-checkbox-label-spacing: 0;
+          --paper-checkbox-margin: 8px 16px 8px 0;
+          --paper-checkbox-vertical-align: top;
+        }
+        paper-checkbox .subtitle {
+          display: block;
+          font-size: 0.8em;
+          margin-top: 2px;
+          max-width: 150px;
+        }
 
     </style>
   </template>

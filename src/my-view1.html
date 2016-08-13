@@ -97,7 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.myapp_sl.addList(theNew);
         var theCurrentList = this._getCurrentList(theNew.id);
         if (theCurrentList) {
-          app.setDetailView('add', theCurrentList);
+          app.setDetailView('add', theCurrentList,this.$.myapp_sl);
         }
       },
       /**
@@ -106,7 +106,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _editPressed: function(data) {
         var theCurrentList = this._getCurrentList(data.target.id);
         if (theCurrentList) {
-          app.setDetailView('edit', theCurrentList);
+          app.setDetailView('edit', theCurrentList,this.$.myapp_sl);
         }
       },
       /**
@@ -115,7 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _copyPressed: function(data) {
         var theCurrentList = this._getCurrentList(data.target.id);
         if (theCurrentList) {
-          app.setDetailView('copy', theCurrentList);
+          app.setDetailView('copy', theCurrentList,this.$.myapp_sl);
         }
       },
       /**
@@ -124,7 +124,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _deletePressed: function(data) {
         var theCurrentList = this._getCurrentList(data.target.id);
         if (theCurrentList) {
-          app.setDetailView('delete', theCurrentList);
+          app.setDetailView('delete', theCurrentList,this.$.myapp_sl);
         }
       },
 

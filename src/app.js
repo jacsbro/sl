@@ -138,7 +138,7 @@
     }
     return "";
   }
-  
+
   //////////////////////////////////////////////////////////////////////////////
   // Global application state
 
@@ -149,11 +149,12 @@
   }
 
   // holds the current list
-  app.setDetailView = function(mode, aList) {
+  app.setDetailView = function(mode, aList,aSlstore) {
     app.page = 'detailview';
     app.detailViewData = {
       currentListMode: mode,
-      currentList: aList
+      currentList: aList,
+      slstore: aSlstore
     };
   }
 
