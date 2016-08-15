@@ -70,7 +70,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="layout horizontal around-justified">
               <div><paper-icon-button id="[[item.id]]" icon="create" on-tap="_editPressed"></paper-icon-button></div>
               <div><paper-icon-button id="[[item.id]]" icon="content-copy" on-tap="_copyPressed"></paper-icon-button></div>
-              <div><paper-icon-button id="[[item.id]]" icon="delete" on-tap="_deletePressed"></paper-icon-button></div>
             </div>
           </div>
         </paper-card>
@@ -114,18 +113,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * triggers copy
        */
       _copyPressed: function(data) {
-        var theCurrentList = this._getCurrentList(data.target.id);
+        var theTemplate = this._getCurrentList(data.target.id);
+        var theDocs = this.$.myapp_sl.external;
+        var theNew = new ShoppingList(theTemplate);
+        this.$.myapp_sl.addList(theNew);
+        var theCurrentList = this._getCurrentList(theNew.id);
         if (theCurrentList) {
-          app.setDetailView('copy', theCurrentList,this.$.myapp_sl);
-        }
-      },
-      /**
-       * triggers delete
-       */
-      _deletePressed: function(data) {
-        var theCurrentList = this._getCurrentList(data.target.id);
-        if (theCurrentList) {
-          app.setDetailView('delete', theCurrentList,this.$.myapp_sl);
+          app.setDetailView('edit', theCurrentList,this.$.myapp_sl);
         }
       },
 

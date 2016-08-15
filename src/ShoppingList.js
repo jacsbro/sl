@@ -24,13 +24,22 @@ function guid() {
 
 //////////////////////////////////////////////////////////////////////////////
 // shopping list Objects
-function ShoppingList(aName) {
+function ShoppingList(aNameOrTemplate) {
   this.id = guid();
-  this.name = aName;
   this.created = new Date();
   this.modified = new Date();
-  this.items = [];
   this.version = SL_VERSION;
+  this.items = [];
+  if (typeof aNameOrTemplate === "string") {
+    this.name = aNameOrTemplate;
+  }
+  if (aNameOrTemplate.name !== undefined && aNameOrTemplate.items !== undefined) {
+    this.name = "Copy of " + aNameOrTemplate.name;
+    for (var i=0; i<aNameOrTemplate.items.length; i++) {
+      var theItem = new ShoppingListItem(aNameOrTemplate.items[i].name, aNameOrTemplate.items[i].unit, aNameOrTemplate.items[i].qty, aNameOrTemplate.items[i].done, aNameOrTemplate.items[i].needed);
+      this.addItem(theItem);
+    }
+  }
 };
 
 ShoppingList.prototype.addItem = function(aItem) {
@@ -56,4 +65,13 @@ function ShoppingListItem(aName, aUnit, aQty) {
   this.qty = aQty;
   this.done = false;
   this.needed = true;
+};
+
+function ShoppingListItem(aName, aUnit, aQty, aDone, aNeeded) {
+  this.id = guid();
+  this.name = aName;
+  this.unit = aUnit;
+  this.qty = aQty;
+  this.done = aDone;
+  this.needed = aNeeded;
 };
