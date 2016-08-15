@@ -150,13 +150,12 @@
 
   // holds the current list
   app.setDetailView = function(mode, aList,aSlstore) {
-    app.page = 'detailview';
+    app.set('route.path', '/detailview');
     app.detailViewData = {
       currentListMode: mode,
       currentList: aList,
       slstore: aSlstore
     };
   }
-
 
 })(document);

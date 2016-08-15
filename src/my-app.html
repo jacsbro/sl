@@ -74,9 +74,15 @@
 
     <!-- url bar and route TODO: this should be fixed to reflect the state
     <app-location id="applocation" route="{{page}}"></app-location>
-    -->
     <app-route
         route="{{page}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+    -->
+    <app-location id="applocation" route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
         pattern="/:page"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
@@ -106,7 +112,7 @@
         </app-header>
 
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-          <my-view1 name="view1"></my-view1>
+          <my-view1 name="view1" route="{{subroute}}"></my-view1>
           <my-detailview name="detailview" data="{{detailViewData}}"></my-detailview>
         </iron-pages>
 
@@ -125,6 +131,12 @@
 
       properties: {
 
+        route: {
+          type: Object,
+          reflectToAttribute: true,
+          observer: '_routeChanged'
+        },
+
         page: {
           type: String,
           reflectToAttribute: true,
@@ -139,6 +151,10 @@
       observers: [
         '_routePageChanged(routeData.page)'
       ],
+
+      _routeChanged: function(route) {
+        console.log("route changed " + route);
+      },
 
       _routePageChanged: function(page) {
         this.page = page || 'view1';
