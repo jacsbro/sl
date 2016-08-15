@@ -266,6 +266,7 @@
        * save
        */
       _savePressed: function() {
+        this.data.currentList.modified = new Date();
         this.data.slstore.save();
         this._saveNeeded(false);
       },
