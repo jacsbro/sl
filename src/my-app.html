@@ -72,14 +72,6 @@
     <!-- check horizontal resolution -->
     <iron-media-query query="(min-width: 720px)" query-matches="{{_wideScreen}}"></iron-media-query>
 
-    <!-- url bar and route TODO: this should be fixed to reflect the state
-    <app-location id="applocation" route="{{page}}"></app-location>
-    <app-route
-        route="{{page}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
-    -->
     <app-location id="applocation" route="{{route}}"></app-location>
     <app-route
         route="{{route}}"
