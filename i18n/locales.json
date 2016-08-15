@@ -38,6 +38,9 @@
     "neededmodehint": "when on we only display articles marked as needed",
     "completedmode": "Hide completed",
     "completedmodehint": "when on we hide articles marked as completed",
+    "confirmdelete": "Do you want to delete list '{name}'?",
+    "ok": "ok",
+    "cancel": "cancel",
 
     "hello": "Hello {name}.",
     "header_1": "Translation and localization",
@@ -86,6 +89,9 @@
     "neededmodehint": "Nicht benötigte Artikel verbergen bzw. anzeigen",
     "completedmode": "Erledigte ausblenden",
     "completedmodehint": "Erledigte Artikel verbergen bzw. anzeigen",
+    "confirmdelete": "Liste '{name}' wirklich löschen?",
+    "ok": "Ok",
+    "cancel": "Abbrechen",
 
 
     "hello": "Hallo {name}.",

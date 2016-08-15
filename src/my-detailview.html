@@ -38,12 +38,13 @@
     <app-toolbar class="toolbar2">
       <paper-icon-button icon="menu" on-tap="_menuPressedOn"></paper-icon-button>
       <paper-icon-button icon="add" on-tap="_addPressed2"></paper-icon-button>
+      <paper-icon-button icon="delete" on-tap="_deletePressedOn"></paper-icon-button>
       <template is="dom-if" if="[[_isSaveNeeded]]">
         <paper-icon-button icon="save" on-tap="_savePressed"></paper-icon-button>
       </template>
-
     </app-toolbar>
 
+    <!-- options mode -->
     <div class="card" hidden$="{{!_isMenumode}}">
       <paper-checkbox checked="{{_isViewmodeDetail}}" class="options">
         {{localize('viewmode')}}
@@ -69,7 +70,17 @@
       </div>
     </div>
 
-    <div class="card" hidden$="{{_isMenumode}}">
+    <!-- delete mode -->
+    <div class="card" hidden$="{{!_isDeletemode}}">
+      <h3>{{localize('confirmdelete', 'name', data.currentList.name)}}</h3>
+      <div class="layout horizontal around-justified margin">
+        <paper-button on-tap="_deleteList">{{localize('ok')}}</paper-button>
+        <paper-button on-tap="_deletePressedOff">{{localize('cancel')}}</paper-button>
+      </div>
+    </div>
+
+    <!-- normal mode mode -->
+    <div class="card" hidden$="{{!_isEditMode(_isMenumode, _isDeletemode)}}">
       <paper-input label="{{localize('name')}}" value="{{data.currentList.name}}" on-change="_changed"></paper-input>
 
       <template is="dom-repeat" items="{{data.currentList.items}}">
@@ -127,6 +138,11 @@
         },
         // true if we are in menumode
         _isMenumode: {
+          type: Boolean,
+          value: false
+        },
+        // true if we are in deletemode
+        _isDeletemode: {
           type: Boolean,
           value: false
         },
@@ -210,7 +226,7 @@
       },
 
       /**
-       * delete
+       * delete an item
        */
       _deletePressed: function(data) {
         var theItems = this.data.currentList.items;
@@ -262,6 +278,20 @@
         this._isMenumode = false;
       },
 
+      _deleteList: function() {
+        this.data.slstore.deleteList(this.data.currentList);
+        this._deletePressedOff();
+        app.setMainView();
+      },
+      /**
+       * deletemode on/off
+       */
+       _deletePressedOn: function() {
+         this._isDeletemode = true;
+       },
+      _deletePressedOff: function() {
+        this._isDeletemode = false;
+      },
       /**
        * save
        */
@@ -277,6 +307,13 @@
 
       _changed: function() {
         this._saveNeeded(true);
+      },
+
+      /**
+       * return true if we should are in normal editmode
+       */
+      _isEditMode: function(menumode, deletemode) {
+        return menumode === false && deletemode === false;
       },
 
       // load localized messages

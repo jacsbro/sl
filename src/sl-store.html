@@ -41,6 +41,16 @@
         this.save();
       },
 
+      deleteList: function(aList) {
+        for (var i=0; i<this.external.length; i++) {
+          if(this.external[i].id === aList.id) {
+            this.splice('external', i, 1);
+            this.save();
+            break;
+          }
+        }
+      },
+
       /**
        * get the current value from storage
        */

@@ -148,7 +148,7 @@
     app.page = aPage;
   }
 
-  // holds the current list
+  // changes route to main view
   app.setDetailView = function(mode, aList,aSlstore) {
     app.set('route.path', '/detailview');
     app.detailViewData = {
@@ -157,5 +157,11 @@
       slstore: aSlstore
     };
   }
+
+  // changes route to main view
+  app.setMainView = function() {
+    app.set('route.path', '/view1');
+  }
+  
 
 })(document);
