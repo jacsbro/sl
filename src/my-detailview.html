@@ -34,16 +34,16 @@
 
     </style>
     <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
-
+<!--
     <app-toolbar class="toolbar2">
-      <paper-icon-button icon="menu" on-tap="_menuPressedOn"></paper-icon-button>
-      <paper-icon-button icon="add" on-tap="_addPressed2"></paper-icon-button>
-      <paper-icon-button icon="delete" on-tap="_deletePressedOn"></paper-icon-button>
+      <paper-icon-button icon="menu" on-tap="menuPressedOn"></paper-icon-button>
+      <paper-icon-button icon="add" on-tap="addPressed"></paper-icon-button>
+      <paper-icon-button icon="delete" on-tap="deletePressedOn"></paper-icon-button>
       <template is="dom-if" if="[[_isSaveNeeded]]">
-        <paper-icon-button icon="save" on-tap="_savePressed"></paper-icon-button>
+        <paper-icon-button icon="save" on-tap="savePressed"></paper-icon-button>
       </template>
     </app-toolbar>
-
+-->
     <!-- options mode -->
     <div class="card" hidden$="{{!_isMenumode}}">
       <paper-checkbox checked="{{_isViewmodeDetail}}" class="options">
@@ -162,10 +162,10 @@
           value: false
         },
         // true if user should save
-        _isSaveNeeded: {
-          type: Boolean,
-          value: false
-        },
+        // _isSaveNeeded: {
+        //   type: Boolean,
+        //   value: false
+        // },
       },
 
       behaviors: [
@@ -216,7 +216,7 @@
           }
         }
       },
-      _addPressed2: function(data) {
+      addPressed: function(data) {
         this._newItem(0);
       },
       _newItem: function(index) {
@@ -271,7 +271,7 @@
       /**
        * menumode on/off
        */
-      _menuPressedOn: function() {
+      menuPressedOn: function() {
         this._isMenumode = true;
       },
       _menuPressedOff: function() {
@@ -286,7 +286,7 @@
       /**
        * deletemode on/off
        */
-       _deletePressedOn: function() {
+       deletePressedOn: function() {
          this._isDeletemode = true;
        },
       _deletePressedOff: function() {
@@ -295,14 +295,14 @@
       /**
        * save
        */
-      _savePressed: function() {
+      savePressed: function() {
         this.data.currentList.modified = new Date();
         this.data.slstore.save();
         this._saveNeeded(false);
       },
 
       _saveNeeded: function(b) {
-        this.set('_isSaveNeeded', b);
+        app.set('isSaveNeeded', b);
       },
 
       _changed: function() {

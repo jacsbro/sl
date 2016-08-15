@@ -50,11 +50,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
 
     <sl-store id="myapp_sl" external="{{documents}}"></sl-store>
-
+<!--
     <app-toolbar class="toolbar2">
-      <paper-icon-button icon="add" on-tap="_addPressed"></paper-icon-button>
+      <paper-icon-button icon="add" on-tap="addPressed"></paper-icon-button>
     </app-toolbar>
-
+-->
     <div class="card">
       <h1>{{localize('slmgmt')}}</h1>
       <div>{{localize('slmgmthint')}}</div>
@@ -91,7 +91,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /**
        * triggers add
        */
-      _addPressed: function() {
+      addPressed: function() {
         var theDocs = this.$.myapp_sl.external;
         var theNew = new ShoppingList(this._toDate(new Date()));
         this.$.myapp_sl.addList(theNew);

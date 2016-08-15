@@ -89,23 +89,28 @@
         <app-header id='myapp_header' fixed>
 
           <app-toolbar class="tall container flex-horizontal" primary>
-            <div class="flex-1"><paper-button id='myapp_imprint' on-tap='_showImprint'>{{localize('imprint')}}</paper-button></div>
-            <paper-tooltip for="myapp_imprint" position="bottom">{{localize('imprinttt')}}</paper-tooltip>
 
-            <div class="flex-1"><paper-button id='myapp_contact' on-tap='_showContact'>{{localize('contact')}}</paper-button></div>
-            <paper-tooltip for="myapp_contact" position="bottom">{{localize('contacttt')}}</paper-tooltip>
-
+            <template is="dom-if" if="[[_isDetailView(page)]]">
+              <paper-icon-button icon="arrow-back" on-tap="_backPressed"></paper-icon-button>
+            </template>
+            <paper-icon-button icon="add" on-tap="_addPressed"></paper-icon-button>
+            <template is="dom-if" if="[[_isDetailView(page)]]">
+              <paper-icon-button icon="delete" on-tap="_deletePressed"></paper-icon-button>
+            </template>
+            <template is="dom-if" if="[[isSaveNeeded]]">
+              <paper-icon-button icon="save" on-tap="_savePressed"></paper-icon-button>
+            </template>
             <div class="flex-1"><paper-button id='myapp_langtoggle' on-tap='_toggleLocale'>{{_getLocale()}}</paper-button></div>
-            <paper-tooltip for="myapp_langtoggle" position="bottom">{{localize('togglelocalett')}}</paper-tooltip>
+            <template is="dom-if" if="[[_isDetailView(page)]]">
+              <paper-icon-button icon="menu" on-tap="_menuPressed"></paper-icon-button>
+            </template>
 
-            <div class="flex-1 searchbutton" id='myapp_searchbutton' ><paper-icon-button icon="search" on-tap="_searchPressed"></paper-icon-button></div>
-            <paper-tooltip for="myapp_searchbutton" position="bottom">{{localize('searchfieldtt')}}</paper-tooltip>
           </app-toolbar>
         </app-header>
 
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-          <my-view1 name="view1" route="{{subroute}}"></my-view1>
-          <my-detailview name="detailview" data="{{detailViewData}}"></my-detailview>
+          <my-view1 id="myapp_mainview" name="view1" route="{{subroute}}"></my-view1>
+          <my-detailview id="myapp_detailview" name="detailview" data="{{detailViewData}}"></my-detailview>
         </iron-pages>
 
       </app-header-layout>
@@ -134,6 +139,13 @@
           reflectToAttribute: true,
           observer: '_pageChanged'
         },
+
+        // true if user should save
+        isSaveNeeded: {
+          type: Boolean,
+          value: false
+        },
+
       },
 
       behaviors: [
@@ -154,15 +166,54 @@
 
       _pageChanged: function(page) {
         // load page import on demand.
-        this.importHref(
-          this.resolveUrl('my-' + page + '.html'), null, null, true);
+        this.importHref(this.resolveUrl('my-' + page + '.html'), null, null, true);
       },
 
       /**
-       * triggers search
+       * check if we are on the detail page
        */
-      _searchPressed: function() {
+      _isDetailView: function(page) {
+        return page === "detailview";
+      },
 
+      /**
+       * triggers back on detailview
+       */
+      _backPressed: function() {
+        app.setMainView();
+      },
+
+      /**
+       * triggers add on main view or detailview
+       */
+      _addPressed: function() {
+        if (this.page === "view1") {
+          this.$.myapp_mainview.addPressed();
+        }
+        if (this.page === "detailview") {
+          this.$.myapp_detailview.addPressed();
+        }
+      },
+
+      /**
+       * triggers deletemode on detailview
+       */
+      _deletePressed: function() {
+        this.$.myapp_detailview.deletePressedOn();
+      },
+
+      /**
+       * triggers save on detailview
+       */
+      _savePressed: function() {
+        this.$.myapp_detailview.savePressed();
+      },
+
+      /**
+       * triggers menu on detailview
+       */
+      _menuPressed: function() {
+        this.$.myapp_detailview.menuPressedOn();
       },
 
       /**
