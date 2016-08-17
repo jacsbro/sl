@@ -34,16 +34,6 @@
 
     </style>
     <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
-<!--
-    <app-toolbar class="toolbar2">
-      <paper-icon-button icon="menu" on-tap="menuPressedOn"></paper-icon-button>
-      <paper-icon-button icon="add" on-tap="addPressed"></paper-icon-button>
-      <paper-icon-button icon="delete" on-tap="deletePressedOn"></paper-icon-button>
-      <template is="dom-if" if="[[_isSaveNeeded]]">
-        <paper-icon-button icon="save" on-tap="savePressed"></paper-icon-button>
-      </template>
-    </app-toolbar>
--->
     <!-- options mode -->
     <div class="card" hidden$="{{!_isMenumode}}">
       <paper-checkbox checked="{{_isViewmodeDetail}}" class="options">
@@ -85,38 +75,40 @@
 
       <template is="dom-repeat" items="{{data.currentList.items}}">
 
-        <paper-card class="margin" hidden$="{{_isFiltered(_isNeededmode, _isCompletedmode, index)}}">
-          <!-- content in detail mode -->
-          <div class="card-content" hidden$="{{!_isViewmodeDetail}}">
-            <paper-input label="{{localize('article')}}" value="{{item.name}}" on-change="_changed"></paper-input>
-            <div class="layout horizontal around-justified">
-              <paper-input label="{{localize('quantity')}}" value="{{item.qty}}" type="number" on-change="_changed"></paper-input>
-              <paper-input label="{{localize('unit')}}" value="{{item.unit}}" type="number" on-change="_changed"></paper-input>
+        <template is="dom-if" if="[[!_isFiltered(_isNeededmode, _isCompletedmode, index, item.needed, item.done)]]">
+          <paper-card class="margin">
+            <!-- content in detail mode -->
+            <div class="card-content" hidden$="{{!_isViewmodeDetail}}">
+              <paper-input label="{{localize('article')}}" value="{{item.name}}" on-change="_changed"></paper-input>
+              <div class="layout horizontal around-justified">
+                <paper-input label="{{localize('quantity')}}" value="{{item.qty}}" type="number" on-change="_changed"></paper-input>
+                <paper-input label="{{localize('unit')}}" value="{{item.unit}}" type="number" on-change="_changed"></paper-input>
+              </div>
+              <div class="layout horizontal around-justified">
+                <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(index)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
+                <paper-checkbox id="[[item.id]]" checked="[[_isDone(index)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
+              </div>
             </div>
-            <div class="layout horizontal around-justified">
-              <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(index)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
-              <paper-checkbox id="[[item.id]]" checked="[[_isDone(index)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
+            <!-- content in brief mode -->
+            <div class="card-content" hidden$="{{_isViewmodeDetail}}">
+              <paper-input label="{{localize('article')}}" value="{{item.name}}" on-change="_changed"></paper-input>
+              <div class="layout horizontal around-justified">
+                <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(index)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
+                <paper-checkbox id="[[item.id]]" checked="[[_isDone(index)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
+              </div>
             </div>
-          </div>
-          <!-- content in brief mode -->
-          <div class="card-content" hidden$="{{_isViewmodeDetail}}">
-            <paper-input label="{{localize('article')}}" value="{{item.name}}" on-change="_changed"></paper-input>
-            <div class="layout horizontal around-justified">
-              <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(index)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
-              <paper-checkbox id="[[item.id]]" checked="[[_isDone(index)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
-            </div>
-          </div>
 
-          <!-- actions visible in detail mode -->
-          <div class="card-actions" hidden$="{{!_isViewmodeDetail}}">
-            <div class="layout horizontal around-justified">
-              <div><paper-icon-button id="[[item.id]]" icon="add" on-tap="_addPressed"></paper-icon-button></div>
-              <div hidden$="{{_isFirst(index)}}"><paper-icon-button id="[[item.id]]" icon="arrow-upward" on-tap="_upPressed"></paper-icon-button></div>
-              <div hidden$="{{_isLast(index)}}"><paper-icon-button id="[[item.id]]" icon="arrow-downward" on-tap="_downPressed"></paper-icon-button></div>
-              <div><paper-icon-button id="[[item.id]]" icon="delete" on-tap="_deletePressed"></paper-icon-button></div>
+            <!-- actions visible in detail mode -->
+            <div class="card-actions" hidden$="{{!_isViewmodeDetail}}">
+              <div class="layout horizontal around-justified">
+                <div><paper-icon-button id="[[item.id]]" icon="add" on-tap="_addPressed"></paper-icon-button></div>
+                <div hidden$="{{_isFirst(index)}}"><paper-icon-button id="[[item.id]]" icon="arrow-upward" on-tap="_upPressed"></paper-icon-button></div>
+                <div hidden$="{{_isLast(index)}}"><paper-icon-button id="[[item.id]]" icon="arrow-downward" on-tap="_downPressed"></paper-icon-button></div>
+                <div><paper-icon-button id="[[item.id]]" icon="delete" on-tap="_deletePressed"></paper-icon-button></div>
+              </div>
             </div>
-          </div>
-        </paper-card>
+          </paper-card>
+        </template>
 
       </template>
     </div>
@@ -187,7 +179,7 @@
       /**
        * return true if this is filtered due to displaymode settings
        */
-      _isFiltered: function(neededMode, completeMode, index) {
+      _isFiltered: function(neededMode, completeMode, index, needed, done) {
         var theItem = this.data.currentList.items[index];
         var isFiltered = false;
         if (this._isNeededmode && theItem.needed == false) {
@@ -241,11 +233,11 @@
             var thePropName = 'data.currentList.items.' + i + "." + propName;
             this.set(thePropName, app.toBoolean(b));
             this._changed();
+            this.set('_isNeededmode', this._isNeededmode);
+            this.set('_isCompletedmode', this._isCompletedmode);
           }
         }
       },
-
-
       /**
        * add
        */
