@@ -54,7 +54,12 @@
           {{localize('completedmodehint')}}
         </span>
       </paper-checkbox>
-
+      <paper-checkbox id="my_detail_allneeded" on-change="_allNeeded" class="options">
+        {{localize('allneeded')}}
+      </paper-checkbox>
+      <paper-checkbox id="my_detail_allneededfalse" on-change="_allNeededfalse" class="options">
+        {{localize('allneededfalse')}}
+      </paper-checkbox>
       <div class="layout horizontal around-justified margin">
         <paper-button on-tap="_menuPressedOff">OK</paper-button>
       </div>
@@ -206,6 +211,40 @@
       _neededChanged: function(data) {
         this._setBool(data, 'needed');
       },
+
+      /**
+       * option to set everything to needed
+       */
+      _allNeeded: function(data) {
+        var b = data.target.checked;
+        if (b) {
+          this._doAllBool(data, b, 'needed');
+          this.$.my_detail_allneededfalse.checked = !b;
+        }
+      },
+
+      /**
+       * option to set everything to not needed
+       */
+      _allNeededfalse: function(data) {
+        var b = data.target.checked;
+        if (b) {
+          this._doAllBool(data, b, 'needed');
+          this.$.my_detail_allneeded.checked = !b;
+        }
+      },
+
+      _doAllBool: function(data, b, propName) {
+        var theItems = this.data.currentList.items;
+        for( var i=0; i<theItems.length;i++) {
+          var b = data.target.checked == true;
+          var thePropName = 'data.currentList.items.' + i + "." + propName;
+          this.set(thePropName, app.toBoolean(b));
+          this._changed();
+        }
+      },
+
+
       /**
        * return true if this item is done
        */

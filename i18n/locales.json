@@ -41,6 +41,8 @@
     "confirmdelete": "Do you want to delete list '{name}'?",
     "ok": "ok",
     "cancel": "cancel",
+    "allneeded": "All articles needed",
+    "allneededfalse": "No articles needed",
 
     "hello": "Hello {name}.",
     "header_1": "Translation and localization",
@@ -92,6 +94,8 @@
     "confirmdelete": "Liste '{name}' wirklich löschen?",
     "ok": "Ok",
     "cancel": "Abbrechen",
+    "allneeded": "Alle benötigt",
+    "allneededfalse": "Nichts benötigt",
 
 
     "hello": "Hallo {name}.",
