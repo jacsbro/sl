@@ -58,20 +58,11 @@ ShoppingList.prototype.modifiedDisplay = function() {
   return this.modified;
 };
 
-function ShoppingListItem(aName, aUnit, aQty) {
-  this.id = guid();
-  this.name = aName;
-  this.unit = aUnit;
-  this.qty = aQty;
-  this.done = false;
-  this.needed = true;
-};
-
 function ShoppingListItem(aName, aUnit, aQty, aDone, aNeeded) {
   this.id = guid();
   this.name = aName;
   this.unit = aUnit;
   this.qty = aQty;
-  this.done = aDone;
-  this.needed = aNeeded;
+  this.done = app.toBoolean(aDone);
+  this.needed = app.toBoolean(aNeeded);
 };

@@ -139,6 +139,13 @@
     return "";
   }
 
+  app.toBoolean = function(bool) {
+    if (bool === undefined || bool == false ) { // == is ok for boolean and Boolean
+      return new Boolean(false);
+    }
+    return new Boolean(true);
+  }
+
   //////////////////////////////////////////////////////////////////////////////
   // Global application state
 

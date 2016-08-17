@@ -94,17 +94,16 @@
               <paper-input label="{{localize('unit')}}" value="{{item.unit}}" type="number" on-change="_changed"></paper-input>
             </div>
             <div class="layout horizontal around-justified">
-              <paper-checkbox value="{{item.needed}}" on-change="_changed">{{localize('needed')}}</paper-checkbox>
-              <paper-checkbox value="{{item.done}}" on-change="_changed">{{localize('done')}}</paper-checkbox>
+              <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(index)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
+              <paper-checkbox id="[[item.id]]" checked="[[_isDone(index)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
             </div>
           </div>
           <!-- content in brief mode -->
           <div class="card-content" hidden$="{{_isViewmodeDetail}}">
             <paper-input label="{{localize('article')}}" value="{{item.name}}" on-change="_changed"></paper-input>
             <div class="layout horizontal around-justified">
-              <!-- TODO problem binding to boolean - use Boolean? -->
-              <paper-checkbox checked="{{item.needed}}" on-change="_changed">{{localize('needed')}}</paper-checkbox>
-              <paper-checkbox checked="{{item.done}}" on-change="_changed">{{localize('done')}}</paper-checkbox>
+              <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(index)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
+              <paper-checkbox id="[[item.id]]" checked="[[_isDone(index)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
             </div>
           </div>
 
@@ -161,11 +160,6 @@
           type: Boolean,
           value: false
         },
-        // true if user should save
-        // _isSaveNeeded: {
-        //   type: Boolean,
-        //   value: false
-        // },
       },
 
       behaviors: [
@@ -205,6 +199,54 @@
         return false;
       },
       /**
+       * return true if this item is needed
+       */
+      _isNeeded: function(index) {
+        var theItem = this.data.currentList.items[index];
+        if (theItem.needed == true) {
+          return true;
+        }
+        return false;
+      },
+      /**
+       * called when needed is changed
+       */
+      _neededChanged: function(data) {
+        this._setBool(data, 'needed');
+      },
+      /**
+       * return true if this item is done
+       */
+      _isDone: function(index) {
+        var theItem = this.data.currentList.items[index];
+        if (theItem.done == true) {
+          return true;
+        }
+        return false;
+      },
+      /**
+       * called when done is changed
+       */
+      _doneChanged: function(data) {
+        this._setBool(data, 'done');
+      },
+      /**
+       * set a boolean property bound to a checkbox - oh my!
+       */
+      _setBool: function(data, propName) {
+        var theItems = this.data.currentList.items;
+        for( var i=0; i<theItems.length;i++) {
+          if(theItems[i].id === data.target.id) {
+            var b = data.target.checked == true;
+            var thePropName = 'data.currentList.items.' + i + "." + propName;
+            this.set(thePropName, app.toBoolean(b));
+            this._changed();
+          }
+        }
+      },
+
+
+      /**
        * add
        */
       _addPressed: function(data) {
@@ -220,7 +262,7 @@
         this._newItem(0);
       },
       _newItem: function(index) {
-        var theNew = new ShoppingListItem("", UNIT_ST, 1);
+        var theNew = new ShoppingListItem("", UNIT_ST, 1, false, true);
         this.splice('data.currentList.items', index, 0, theNew);
         this._saveNeeded(true);
       },
