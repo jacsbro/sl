@@ -42,7 +42,13 @@
     "ok": "ok",
     "cancel": "cancel",
     "allneeded": "All articles needed",
+    "allneededhint": "Check this if you need all articles from this list",
     "allneededfalse": "No articles needed",
+    "allneededfalsehint": "Check this if you need no articles from this list",
+    "alldone": "All done",
+    "alldonehint": "Check if everything is done",
+    "alldonefalse": "Nothing done",
+    "alldonefalsehint": "Check if nothing is done",
 
     "hello": "Hello {name}.",
     "header_1": "Translation and localization",
@@ -95,7 +101,13 @@
     "ok": "Ok",
     "cancel": "Abbrechen",
     "allneeded": "Alle benötigt",
+    "allneededhint": "Anhaken, wenn alles von dieser Liste benötigt wird",
     "allneededfalse": "Nichts benötigt",
+    "allneededfalsehint": "Anhaken, wenn nichts von dieser Liste benötigt wird",
+    "alldone": "Alles erledigt",
+    "alldonehint": "Anhaken, wenn alles von dieser Liste erledigt wurde",
+    "alldonefalse": "Nichts erledigt",
+    "alldonefalsehint": "Anhaken, wenn noch nichts von dieser Liste erledigt wurde",
 
 
     "hello": "Hallo {name}.",

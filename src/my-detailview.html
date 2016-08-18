@@ -39,24 +39,45 @@
           {{localize('viewmodehint')}}
         </span>
       </paper-checkbox>
+      <hr></hr>
       <paper-checkbox checked="{{_isNeededmode}}" class="options">
         {{localize('neededmode')}}
         <span class="subtitle">
           {{localize('neededmodehint')}}
         </span>
       </paper-checkbox>
+      <paper-checkbox id="my_detail_allneeded" on-change="_allNeeded" class="options">
+        {{localize('allneeded')}}
+        <span class="subtitle">
+          {{localize('allneededhint')}}
+        </span>
+      </paper-checkbox>
+      <paper-checkbox id="my_detail_allneededfalse" on-change="_allNeededfalse" class="options">
+        {{localize('allneededfalse')}}
+        <span class="subtitle">
+          {{localize('allneededfalsehint')}}
+        </span>
+      </paper-checkbox>
+      <hr></hr>
       <paper-checkbox checked="{{_isCompletedmode}}" class="options">
         {{localize('completedmode')}}
         <span class="subtitle">
           {{localize('completedmodehint')}}
         </span>
       </paper-checkbox>
-      <paper-checkbox id="my_detail_allneeded" on-change="_allNeeded" class="options">
-        {{localize('allneeded')}}
+      <paper-checkbox id="my_detail_alldone" on-change="_allDone" class="options">
+        {{localize('alldone')}}
+        <span class="subtitle">
+          {{localize('alldonehint')}}
+        </span>
       </paper-checkbox>
-      <paper-checkbox id="my_detail_allneededfalse" on-change="_allNeededfalse" class="options">
-        {{localize('allneededfalse')}}
+      <paper-checkbox id="my_detail_alldonefalse" on-change="_allDonefalse" class="options">
+        {{localize('alldonefalse')}}
+        <span class="subtitle">
+          {{localize('alldonefalsehint')}}
+        </span>
       </paper-checkbox>
+      <hr></hr>
       <div class="layout horizontal around-justified margin">
         <paper-button on-tap="_menuPressedOff">OK</paper-button>
       </div>
@@ -250,6 +271,29 @@
       _doneChanged: function(data) {
         this._setBool(data, 'done');
       },
+
+      /**
+       * option to set everything to done
+       */
+      _allDone: function(data) {
+        var b = data.target.checked;
+        if (b) {
+          this._doAllBool(b, 'done');
+          this.$.my_detail_alldonefalse.checked = !b;
+        }
+      },
+
+      /**
+       * option to set everything to not done
+       */
+      _allDonefalse: function(data) {
+        var b = data.target.checked;
+        if (b) {
+          this._doAllBool(!b, 'done');
+          this.$.my_detail_alldone.checked = !b;
+        }
+      },
+
       /**
        * set a boolean property bound to a checkbox - oh my!
        */
