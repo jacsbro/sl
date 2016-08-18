@@ -16,9 +16,6 @@
     <style>
       :host {
         display: block;
-        /* avoid outer block
-        padding: 10px;
-        */
       }
       .card {
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
@@ -90,16 +87,16 @@
                 <paper-input label="{{localize('unit')}}" value="{{item.unit}}" type="number" on-change="_changed"></paper-input>
               </div>
               <div class="layout horizontal around-justified">
-                <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(index)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
-                <paper-checkbox id="[[item.id]]" checked="[[_isDone(index)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
+                <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(item.needed)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
+                <paper-checkbox id="[[item.id]]" checked="[[_isDone(item.done)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
               </div>
             </div>
             <!-- content in brief mode -->
             <div class="card-content" hidden$="{{_isViewmodeDetail}}">
               <paper-input label="{{localize('article')}}" value="{{item.name}}" on-change="_changed"></paper-input>
               <div class="layout horizontal around-justified">
-                <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(index)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
-                <paper-checkbox id="[[item.id]]" checked="[[_isDone(index)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
+                <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(item.needed)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
+                <paper-checkbox id="[[item.id]]" checked="[[_isDone(item.done)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
               </div>
             </div>
 
@@ -198,12 +195,8 @@
       /**
        * return true if this item is needed
        */
-      _isNeeded: function(index) {
-        var theItem = this.data.currentList.items[index];
-        if (theItem.needed == true) {
-          return true;
-        }
-        return false;
+      _isNeeded: function(needed) {
+        return needed == true;
       },
       /**
        * called when needed is changed
@@ -218,7 +211,7 @@
       _allNeeded: function(data) {
         var b = data.target.checked;
         if (b) {
-          this._doAllBool(data, b, 'needed');
+          this._doAllBool(b, 'needed');
           this.$.my_detail_allneededfalse.checked = !b;
         }
       },
@@ -229,15 +222,14 @@
       _allNeededfalse: function(data) {
         var b = data.target.checked;
         if (b) {
-          this._doAllBool(data, b, 'needed');
+          this._doAllBool(!b, 'needed');
           this.$.my_detail_allneeded.checked = !b;
         }
       },
 
-      _doAllBool: function(data, b, propName) {
+      _doAllBool: function(b, propName) {
         var theItems = this.data.currentList.items;
         for( var i=0; i<theItems.length;i++) {
-          var b = data.target.checked == true;
           var thePropName = 'data.currentList.items.' + i + "." + propName;
           this.set(thePropName, app.toBoolean(b));
           this._changed();
@@ -249,12 +241,8 @@
       /**
        * return true if this item is done
        */
-      _isDone: function(index) {
-        var theItem = this.data.currentList.items[index];
-        if (theItem.done == true) {
-          return true;
-        }
-        return false;
+      _isDone: function(done) {
+        return done == true;
       },
       /**
        * called when done is changed
