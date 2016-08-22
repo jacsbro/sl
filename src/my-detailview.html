@@ -382,6 +382,11 @@
       },
       _menuPressedOff: function() {
         this._isMenumode = false;
+        // do not preserve the state of these checkboxes
+        this.$.my_detail_allneeded.checked = false;
+        this.$.my_detail_allneededfalse.checked = false;
+        this.$.my_detail_alldone.checked = false;
+        this.$.my_detail_alldonefalse.checked = false;
       },
 
       _deleteList: function() {
