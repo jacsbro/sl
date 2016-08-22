@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
@@ -99,7 +100,7 @@
       <template is="dom-repeat" items="{{data.currentList.items}}">
 
         <template is="dom-if" if="[[!_isFiltered(_isNeededmode, _isCompletedmode, index, item.needed, item.done)]]">
-          <paper-card class="margin">
+          <paper-card class$="{{_margin}}">
             <!-- content in detail mode -->
             <div class="card-content" hidden$="{{!_isViewmodeDetail}}">
               <paper-input label="{{localize('article')}}" value="{{item.name}}" on-change="_changed"></paper-input>
@@ -114,10 +115,10 @@
             </div>
             <!-- content in brief mode -->
             <div class="card-content" hidden$="{{_isViewmodeDetail}}">
-              <paper-input label="{{localize('article')}}" value="{{item.name}}" on-change="_changed"></paper-input>
               <div class="layout horizontal around-justified">
-                <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(item.needed)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
-                <paper-checkbox id="[[item.id]]" checked="[[_isDone(item.done)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
+                <input is="iron-input" bind-value="{{item.name}}" on-change="_changed">
+                <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(item.needed)]]" on-change="_neededChanged"></paper-checkbox>
+                <paper-checkbox id="[[item.id]]" checked="[[_isDone(item.done)]]" on-change="_doneChanged"></paper-checkbox>
               </div>
             </div>
 
@@ -175,6 +176,11 @@
           type: Boolean,
           value: false
         },
+        // margin depending on detailmode
+        _margin: {
+          type: String,
+          value: 'margin'
+        },
       },
 
       behaviors: [
@@ -212,6 +218,13 @@
           return true;
         }
         return false;
+      },
+
+      _computeMargin: function(isViewmodeDetail) {
+        if (isViewmodeDetail) {
+          return "margin";
+        }
+        return "";
       },
       /**
        * return true if this item is needed
@@ -387,6 +400,12 @@
         this.$.my_detail_allneededfalse.checked = false;
         this.$.my_detail_alldone.checked = false;
         this.$.my_detail_alldonefalse.checked = false;
+        // add/hide margin for cards
+        if(this._isViewmodeDetail) {
+          this.set('_margin', 'margin');
+        } else {
+          this.set('_margin', '');
+        }
       },
 
       _deleteList: function() {

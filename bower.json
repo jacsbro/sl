@@ -29,7 +29,8 @@
     "paper-fab": "PolymerElements/paper-fab#^1.2.0",
     "paper-card": "PolymerElements/paper-card#^1.1.2",
     "paper-checkbox": "PolymerElements/paper-checkbox#^1.4.0",
-    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.0"
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^1.2.0",
+    "iron-input": "PolymerElements/iron-input#^1.0.10"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
