@@ -4,5 +4,5 @@ module.exports = {
     '/sl/manifest.json',
     '/sl/bower_components/webcomponentsjs/webcomponents-lite.min.js'
   ],
-  navigateFallback: '/index.html'
+  navigateFallback: '/sl/index.html'
 };
