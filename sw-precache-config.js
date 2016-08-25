@@ -1,8 +1,12 @@
 module.exports = {
   staticFileGlobs: [
-    '/sl/index.html',
-    '/sl/manifest.json',
-    '/sl/bower_components/webcomponentsjs/webcomponents-lite.min.js'
+    '/index.html',
+    '/manifest.json',
+    '/bower_components/webcomponentsjs/webcomponents-lite.min.js'
   ],
-  navigateFallback: '/sl/index.html'
+  stripPrefixMulti: {
+    'bower_components/': 'sl/bower_components/',
+    'src/': 'sl/src/'
+  },
+  navigateFallback: '/index.html'
 };
