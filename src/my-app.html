@@ -157,15 +157,17 @@
       ],
 
       _routeChanged: function(route) {
-        console.log("route changed " + route);
+        console.log("route changed path: " + route.path + " value:" + route.value);
       },
 
       _routePageChanged: function(page) {
+        console.log('_routePageChanged: ' + page)
         this.page = page || 'view1';
       },
 
       _pageChanged: function(page) {
         // load page import on demand.
+        console.log('_pageChanged: ' + page)
         this.importHref(this.resolveUrl('my-' + page + '.html'), null, null, true);
       },
 

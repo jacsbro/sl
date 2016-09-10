@@ -8,6 +8,7 @@
   "sources": ["README.md",
               "i18n/**/*",
               "images/**/*",
+              "src/*.js",
               "bower.json",
               "manifest.json",
               "service-worker.js",
