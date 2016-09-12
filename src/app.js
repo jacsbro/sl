@@ -169,6 +169,7 @@
   // changes route to main view
   app.setMainView = function() {
     app.set('route.path', '/view1');
+    app.$.myapp_mainview.refresh();
   }
 
 })(document);

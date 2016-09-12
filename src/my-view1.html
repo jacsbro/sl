@@ -59,12 +59,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <h1>{{localize('slmgmt')}}</h1>
       <div>{{localize('slmgmthint')}}</div>
 
-      <template is="dom-repeat" items="{{documents}}">
+      <template id="myview1docs" is="dom-repeat" items="{{documents}}">
         <paper-card class="margin">
           <div class="card-content">
-            <div class="bold">[[item.name]]</div>
-            <div>{{localize('lastchange')}} : {{_toDate(item.modified)}}</div>
-            <div>{{localize('itemcount')}} : [[item.items.length]]</div>
+            <div class="bold">{{_getItem(item.name, displayEnforcer)}}</div>
+            <div>{{localize('lastchange')}} : {{_toDate(item.modified, displayEnforcer)}}</div>
+            <div>{{localize('itemcount')}} : {{_getItem(item.items.length, displayEnforcer)}}</div>
           </div>
           <div class="card-actions">
             <div class="layout horizontal around-justified">
@@ -85,6 +85,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       is: 'my-view1',
 
+      properties: {
+        displayEnforcer: {
+          type:Number,
+          value:Math.random()
+        }
+      },
+
       behaviors: [
         Polymer.AppLocalizeBehavior
       ],
@@ -93,7 +100,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        */
       addPressed: function() {
         var theDocs = this.$.myapp_sl.external;
-        var theNew = new ShoppingList(this._toDate(new Date()));
+        var theNew = new ShoppingList(this._toDate(new Date(), this.displayEnforcer));
         this.$.myapp_sl.addList(theNew);
         var theCurrentList = this._getCurrentList(theNew.id);
         if (theCurrentList) {
@@ -137,9 +144,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       /**
+       * return item to be rendered
+       */
+      _getItem: function(item, displayEnforcer) {
+          return item;
+      },
+
+      /**
        * converts date for display
        */
-      _toDate: function(date) {
+      _toDate: function(date, displayEnforcer) {
         if (date && !(date instanceof Date)) {
           var theDateMillies = Date.parse(date);
           if (theDateMillies && theDateMillies !== NaN) {
@@ -150,6 +164,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return date.toLocaleDateString(app.language);
         }
         return "";
+      },
+
+      refresh: function() {
+          this.displayEnforcer = Math.random();
       },
 
       // load localized messages
