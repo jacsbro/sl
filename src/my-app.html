@@ -191,8 +191,7 @@
       _addPressed: function() {
         if (this.page === "view1") {
           this.$.myapp_mainview.addPressed();
-        }
-        if (this.page === "detailview") {
+        } else if (this.page === "detailview") {
           this.$.myapp_detailview.addPressed();
         }
       },

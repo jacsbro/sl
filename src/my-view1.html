@@ -59,7 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <h1>{{localize('slmgmt')}}</h1>
       <div>{{localize('slmgmthint')}}</div>
 
-      <template id="myview1docs" is="dom-repeat" items="{{documents}}">
+      <template id="myview1docs" is="dom-repeat" items="{{documents.lists}}">
         <paper-card class="margin">
           <div class="card-content">
             <div class="bold">{{_getItem(item.name, displayEnforcer)}}</div>
@@ -99,7 +99,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * triggers add
        */
       addPressed: function() {
-        var theDocs = this.$.myapp_sl.external;
         var theNew = new ShoppingList(this._toDate(new Date(), this.displayEnforcer));
         this.$.myapp_sl.addList(theNew);
         var theCurrentList = this._getCurrentList(theNew.id);
@@ -121,7 +120,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        */
       _copyPressed: function(data) {
         var theTemplate = this._getCurrentList(data.target.id);
-        var theDocs = this.$.myapp_sl.external;
         var theNew = new ShoppingList(theTemplate);
         this.$.myapp_sl.addList(theNew);
         var theCurrentList = this._getCurrentList(theNew.id);
@@ -134,7 +132,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        * sets the current list to edit globally in the app
        */
       _getCurrentList: function(id) {
-        var theDocs = this.$.myapp_sl.external;
+        var theDocs = this.$.myapp_sl.external.lists;
         for( var i=0; i<theDocs.length;i++) {
           if(theDocs[i].id === id) {
             return theDocs[i];

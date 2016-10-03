@@ -33,18 +33,19 @@
        * save the current value
        */
       save: function() {
+        this.external.version = this.external.version + 1;
         this.set('internal', JSON.stringify(this.external));
       },
 
       addList: function(aList) {
-        this.splice('external', 0, 0, aList);
+        this.splice('external.lists', 0, 0, aList);
         this.save();
       },
 
       deleteList: function(aList) {
-        for (var i=0; i<this.external.length; i++) {
-          if(this.external[i].id === aList.id) {
-            this.splice('external', i, 1);
+        for (var i=0; i<this.external.lists.length; i++) {
+          if(this.external.lists[i].id === aList.id) {
+            this.splice('external.lists', i, 1);
             this.save();
             break;
           }
@@ -71,7 +72,15 @@
           theData = theData.replace(/\\/g, "");
           this.external = JSON.parse(theData);
         } else {
-          this.external = new Array(0);
+          var external = {};
+          external.version = 0;
+          external.lists = new Array(0);
+          this.set('external', external);
+
+          //this.external = {};
+          //this.external.version = 0;
+          //this.external.lists = new Array(0);
+          
           this.addList(new ShoppingList(app.toDate(new Date())));
         }
         return this.external;

@@ -157,13 +157,12 @@
 
   // changes route to detail view
   app.setDetailView = function(mode, aList,aSlstore) {
-    app.set('route.path', '/detailview');
-
     app.detailViewData = {
       currentListMode: mode,
       currentList: aList,
       slstore: aSlstore
     };
+    app.set('route.path', '/detailview');
   }
 
   // changes route to main view
