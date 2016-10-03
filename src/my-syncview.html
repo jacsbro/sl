@@ -28,7 +28,7 @@
     <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
 
     <div class="card">
-      <div>{{localize('synchint')}} {{_getStatus(status)}}</div>
+      <div>{{localize('synchint')}} {{localize(status)}}</div>
       <div class="layout horizontal around-justified margin">
         <paper-button on-tap="_syncup">{{localize('syncup')}}</paper-button>
         <paper-button on-tap="_syncdown">{{localize('syncdown')}}</paper-button>
@@ -49,7 +49,12 @@
         status: {
           type: String,
           notify: true
-        }
+        },
+        // data to persist
+        data: {
+          type: Object,
+          notify: true
+        },
       },
 
       behaviors: [
@@ -61,6 +66,7 @@
        */
       _syncup: function() {
         console.log("upload");
+        app.updateFirebase();
         app.setSyncicon("sync");
         this._goBack();
       },
@@ -79,16 +85,6 @@
        */
       _goBack: function() {
         app.setMainView();
-      },
-
-      /**
-       * return status
-       */
-      _getStatus: function(status) {
-          if(this.localize) {
-              return this.localize(status);
-          }
-          return status;
       },
 
       // load localized messages

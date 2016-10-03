@@ -182,4 +182,26 @@
     app.syncicon = aSyncicon;
   }
 
+  // firebase user
+  app.getFirebaseUid = function() {
+    if (app.firebaseUser) {
+      return app.firebaseUser.uid;
+    }
+    return null;
+  }
+
+  // get internal storage
+  app.getInternal = function() {
+    return app.$.myapp_mainview.$.myapp_sl.internal;
+  }
+
+  // set
+  app.updateFirebase  = function() {
+    var uid = app.getFirebaseUid();
+    var doc = app.getInternal();
+    if (doc && uid) {
+      firebase.database().ref('users/' + uid).set(doc);
+    }
+
+  }
 })(document);

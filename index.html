@@ -85,7 +85,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       'callbacks': {
           'signInSuccess': function(currentUser, credential, redirectUrl) {
             console.log('sucessful login');
-            console.log(currentUser);
 
             var dynamicEl = document.createElement("my-app");
             dynamicEl.id = "app";
@@ -100,7 +99,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             document.head.appendChild(e2);
 
             app.firebase = firebase;
-            
+            app.firebaseUser = currentUser;
+            console.log(app.firebaseUser);
+
             return false;
           }
       }
