@@ -35,6 +35,7 @@
       save: function() {
         this.external.version = this.external.version + 1;
         this.set('internal', JSON.stringify(this.external));
+        app.setSyncicon("sync-disabled");
       },
 
       addList: function(aList) {
@@ -80,11 +81,22 @@
           //this.external = {};
           //this.external.version = 0;
           //this.external.lists = new Array(0);
-          
+
           this.addList(new ShoppingList(app.toDate(new Date())));
         }
         return this.external;
       },
+
+      // updates the sync icon depending on versions of local and firebase storage
+      _updateSyncIcon: function() {
+          var icon = "sync-problem";
+          if (app.firebase) {
+            // TODO check version
+            icon = "sync";
+          }
+          app.setSyncicon(icon);
+      },
+
 
       /**
        * convert the value from internal to external representation when ready

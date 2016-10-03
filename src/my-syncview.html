@@ -1,0 +1,106 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<dom-module id="my-syncview">
+
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      .card {
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        border-radius: 5px;
+        background-color: var(--app-background-color);
+        color: var(--app-text-color-light);
+      }
+
+      .margin {
+        margin-top: 2rem;
+      }
+
+    </style>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
+
+    <div class="card">
+      <div>{{localize('synchint')}} {{_getStatus(status)}}</div>
+      <div class="layout horizontal around-justified margin">
+        <paper-button on-tap="_syncup">{{localize('syncup')}}</paper-button>
+        <paper-button on-tap="_syncdown">{{localize('syncdown')}}</paper-button>
+        <paper-button on-tap="_goBack">{{localize('cancel')}}</paper-button>
+      </div>
+
+    </div>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'my-syncview',
+
+      properties: {
+        status: {
+          type: String,
+          notify: true
+        }
+      },
+
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+
+      /**
+       * triggers upload
+       */
+      _syncup: function() {
+        console.log("upload");
+        app.setSyncicon("sync");
+        this._goBack();
+      },
+
+      /**
+       * triggers download
+       */
+      _syncdown: function() {
+        console.log("download");
+        app.setSyncicon("sync");
+        this._goBack();
+      },
+
+      /**
+       * triggers download
+       */
+      _goBack: function() {
+        app.setMainView();
+      },
+
+      /**
+       * return status
+       */
+      _getStatus: function(status) {
+          if(this.localize) {
+              return this.localize(status);
+          }
+          return status;
+      },
+
+      // load localized messages
+      attached: function() {
+        app.I18Nregister(this);
+      },
+
+      ready: function() {
+        console.log("syncview ready ");
+      },
+    });
+
+  </script>
+
+</dom-module>

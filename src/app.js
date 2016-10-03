@@ -171,4 +171,15 @@
     app.$.myapp_mainview.refresh();
   }
 
+  // changes route to sync view
+  app.setSyncView = function() {
+    app.set('route.path', '/syncview');
+  }
+
+  // sets the syncicon
+  app.syncicon = 'sync-problem';
+  app.setSyncicon = function(aSyncicon) {
+    app.syncicon = aSyncicon;
+  }
+
 })(document);

@@ -93,16 +93,28 @@
             <template is="dom-if" if="[[_isDetailView(page)]]">
               <paper-icon-button icon="arrow-back" on-tap="_backPressed"></paper-icon-button>
             </template>
-            <paper-icon-button icon="add" on-tap="_addPressed"></paper-icon-button>
+
+            <template is="dom-if" if="[[!_isSyncView(page)]]">
+              <paper-icon-button icon="add" on-tap="_addPressed"></paper-icon-button>
+            </template>
+
+
             <template is="dom-if" if="[[_isDetailView(page)]]">
               <paper-icon-button icon="delete" on-tap="_deletePressed"></paper-icon-button>
             </template>
+
             <template is="dom-if" if="[[isSaveNeeded]]">
               <paper-icon-button icon="save" on-tap="_savePressed"></paper-icon-button>
             </template>
+
             <div class="flex-1"><paper-button id='myapp_langtoggle' on-tap='_toggleLocale'>{{_getLocale()}}</paper-button></div>
+
             <template is="dom-if" if="[[_isDetailView(page)]]">
               <paper-icon-button icon="menu" on-tap="_menuPressed"></paper-icon-button>
+            </template>
+
+            <template is="dom-if" if="[[!_isDetailView(page)]]">
+              <paper-icon-button icon="{{syncicon}}" on-tap="_syncPressed"></paper-icon-button>
             </template>
 
           </app-toolbar>
@@ -111,6 +123,7 @@
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
           <my-view1 id="myapp_mainview" name="view1" route="{{subroute}}"></my-view1>
           <my-detailview id="myapp_detailview" name="detailview" data="{{detailViewData}}"></my-detailview>
+          <my-syncview id="myapp_syncview" name="syncview" status="{{syncicon}}"></my-detailview>
         </iron-pages>
 
       </app-header-layout>
@@ -179,6 +192,14 @@
       },
 
       /**
+       * check if we are on the sync page
+       */
+      _isSyncView: function(page) {
+        return page === "syncview";
+      },
+
+
+      /**
        * triggers back on detailview
        */
       _backPressed: function() {
@@ -215,6 +236,11 @@
        */
       _menuPressed: function() {
         this.$.myapp_detailview.menuPressedOn();
+      },
+
+      // sync button pressed - change view
+      _syncPressed: function() {
+        app.setSyncView();
       },
 
       /**
