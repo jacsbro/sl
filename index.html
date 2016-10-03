@@ -23,7 +23,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
 
+    ////////////////////////////////////////////////////////////////////////////
     // setup Polymer options
+    ////////////////////////////////////////////////////////////////////////////
     window.Polymer = {lazyRegister: true, dom: 'shadow'};
 
     // load webcomponents polyfills
@@ -49,6 +51,67 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   </script>
 
+  <!--
+  <script src="https://www.gstatic.com/firebasejs/3.3.2/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase-storage.js"></script>
+-->
+  <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCE1JCQXckJCf_j7keblp38y4Q9BIAagbM",
+      authDomain: "shoppinglist-3ec51.firebaseapp.com",
+      databaseURL: "https://shoppinglist-3ec51.firebaseio.com",
+      storageBucket: "shoppinglist-3ec51.appspot.com",
+    };
+    firebase.initializeApp(config);
+    // Get a reference to the storage service, which is used to create references in your storage bucket
+    //var storage = firebase.storage();
+
+    // Get a reference to the database service
+    var database = firebase.database();
+  </script>
+
+  <script src="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.css" />
+  <script type="text/javascript">
+    // FirebaseUI config.
+    var uiConfig = {
+      'signInSuccessUrl': '<url-to-redirect-to-on-success>',
+      'signInOptions': [
+        firebase.auth.EmailAuthProvider.PROVIDER_ID
+      ],
+      'callbacks': {
+          'signInSuccess': function(currentUser, credential, redirectUrl) {
+            console.log('sucessful login');
+            console.log(currentUser);
+
+            var dynamicEl = document.createElement("my-app");
+            dynamicEl.id = "app";
+            document.body.appendChild(dynamicEl);
+
+            var e1 = document.createElement('script');
+            e1.src = 'src/app.js';
+            document.head.appendChild(e1);
+
+            var e2 = document.createElement('script');
+            e2.src = 'src/ShoppingList.js';
+            document.head.appendChild(e2);
+
+            return false;
+          }
+      }
+    };
+
+    // Initialize the FirebaseUI Widget using Firebase.
+    var ui = new firebaseui.auth.AuthUI(firebase.auth());
+    // The start method will wait until the DOM is loaded.
+    ui.start('#firebaseui-auth-container', uiConfig);
+  </script>
+
+
+
   <link rel="import" href="src/my-app.html">
 
   <style>
@@ -70,25 +133,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
 
-  <!-- firebase
-  <script src="https://www.gstatic.com/firebasejs/3.3.2/firebase.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase-storage.js"></script>
-  <script>
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyCE1JCQXckJCf_j7keblp38y4Q9BIAagbM",
-      authDomain: "shoppinglist-3ec51.firebaseapp.com",
-      databaseURL: "https://shoppinglist-3ec51.firebaseio.com",
-      storageBucket: "shoppinglist-3ec51.appspot.com",
-    };
-    firebase.initializeApp(config);
-  </script>
--->
-  <!-- app -->
+  <div id="firebaseui-auth-container"></div>
+
+  <!-- app
   <my-app id="app"></my-app>
   <script src="src/app.js"></script>
   <script src="src/ShoppingList.js"></script>
+  -->
 
 </body>
 </html>
