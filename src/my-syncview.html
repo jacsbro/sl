@@ -28,7 +28,9 @@
     <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
 
     <div class="card">
-      <div>{{localize('synchint')}} {{localize(status)}}</div>
+      <div class="mediumfont">{{localize('synchint')}} {{localize(status)}}</div>
+      <div class="mediumfont">{{localize('remoteversion')}} {{_getRemoteVersion()}}</div>
+      <div class="mediumfont">{{localize('localversion')}} {{_getLocalVersion()}}</div>
       <div class="layout horizontal around-justified margin">
         <paper-button on-tap="_syncup">{{localize('syncup')}}</paper-button>
         <paper-button on-tap="_syncdown">{{localize('syncdown')}}</paper-button>
@@ -78,6 +80,19 @@
         console.log("download");
         app.setSyncicon("sync");
         this._goBack();
+      },
+
+      // gets remote version
+      _getRemoteVersion: function() {
+        if (app.hasFirebaseSl()) {
+          return app.getFirebaseSl().version;
+        }
+        return "?";
+      },
+
+      // gets local version
+      _getLocalVersion: function() {
+        return app.getExternal().version;
       },
 
       /**

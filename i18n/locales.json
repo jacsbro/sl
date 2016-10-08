@@ -62,6 +62,8 @@
     "local": "Work local",
     "signedinas": "Signed in as ",
     "notsignedin": "Not signed in",
+    "remoteversion": "Version in the cloud is ",
+    "localversion": "Local version is ",
 
     "hello": "Hello {name}.",
     "header_1": "Translation and localization",
@@ -134,6 +136,8 @@
     "local": "Lokal arbeiten",
     "signedinas": "Angemeldet als ",
     "notsignedin": "Nicht angemeldet",
+    "remoteversion": "Versionsnummer in der Cloud ist ",
+    "localversion": "Lokale Versionsnummer ist ",
 
 
     "hello": "Hallo {name}.",

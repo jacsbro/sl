@@ -60,28 +60,12 @@
         var theData = this.$.myapp_storage.storage.sl;
         this.internal = theData;
         if (theData != null) {
-          // determine number of chars to cut off
-          for (var i=0; i<theData.length; i++) {
-            if (theData[i] === '{' || theData[i] === '[') {
-              break;
-            }
-          }
-          // cut off first and last character (internal value is a string)
-          theData = theData.slice(i);
-          theData = theData.slice(0, -i);
-          // strip backslashes
-          theData = theData.replace(/\\/g, "");
-          this.external = JSON.parse(theData);
+          this.external = app.fromInternal(theData);
         } else {
           var external = {};
           external.version = 0;
           external.lists = new Array(0);
           this.set('external', external);
-
-          //this.external = {};
-          //this.external.version = 0;
-          //this.external.lists = new Array(0);
-
           this.addList(new ShoppingList(app.toDate(new Date())));
         }
         return this.external;

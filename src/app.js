@@ -184,11 +184,31 @@
     app.syncicon = aSyncicon;
   }
 
-  // store firebase objects
+  // store firebase objects after login
   app.setFirebase = function(firebase, firebaseUser) {
     app.firebase = firebase;
     app.firebaseUser = firebaseUser;
+    app.getSlFromFirebase();
   },
+
+  // read sl from firebase
+  app.getSlFromFirebase = function() {
+    var uid = app.getFirebaseUid();
+    firebase.database().ref('/users/' + uid).once('value').then(function(snapshot) {
+      app.firebaseSl = app.fromInternal(snapshot.val());
+      if (!app.firebaseSl || !app.firebaseSl.version) {
+          app.firebaseSl = null;
+      }
+    });
+  }
+
+  app.hasFirebaseSl = function() {
+      return app.firebaseSl && app.firebaseSl.version;
+  }
+
+  app.getFirebaseSl = function() {
+      return app.firebaseSl;
+  }
 
   // firebase user
   app.getFirebaseUid = function() {
@@ -198,9 +218,37 @@
     return null;
   }
 
+  // get sl component
+  app.getSlComponent = function() {
+    return app.$.myapp_mainview.$.myapp_sl;
+  }
+
   // get internal storage
   app.getInternal = function() {
     return app.$.myapp_mainview.$.myapp_sl.internal;
+  }
+
+  // get external storage
+  app.getExternal = function() {
+    return app.$.myapp_mainview.$.myapp_sl.external;
+  }
+
+  // convert an internal representation (string) to object form
+  app.fromInternal = function(theData) {
+    // determine number of chars to cut off
+    for (var i=0; i<theData.length; i++) {
+      if (theData[i] === '{' || theData[i] === '[') {
+        break;
+      }
+    }
+    // cut off first and last character (internal value is a string)
+    if (i > 0) {
+      theData = theData.slice(i);
+      theData = theData.slice(0, -i);
+    }
+    // strip backslashes
+    theData = theData.replace(/\\/g, "");
+    return JSON.parse(theData);
   }
 
   // update firebase from internal
