@@ -55,6 +55,11 @@
     "sync-problem": "Unknown",
     "syncup": "Upload",
     "syncdown": "Download",
+    "inithint0": "Welcome!",
+    "inithint1": "This app helps to manage your shopping or TODO lists. If you sign up, your data will be stored in the Google Cloud and you can access it from everywhere.",
+    "inithint2": "If you do not want this, your data will be stored in your browsers Local Store and you may only access it from the current device. Please have this in mind before clearing the cache.",
+    "signin": "Sign in",
+    "local": "Work local",
 
 
     "hello": "Hello {name}.",
@@ -121,6 +126,11 @@
     "sync-problem": "Unbekannt",
     "syncup": "Hochladen",
     "syncdown": "Herunterladen",
+    "inithint0": "Willkommen!",
+    "inithint1": "Mit dieser Anwendung können Einkaufslisten oder TODO Listen verwaltet werden. Wenn Du Dich anmeldest/registrierst, werden Deine Daten in der Google Cloud gespeichert und Du kannst von überall darauf zugreifen.",
+    "inithint2": "Wenn Du das nicht möchtest, werden Deine Listen lokal in Deinem Browser gespeichert und Du kannst diese nur auf dem aktuellen Gerät nutzen. Sei also vorsichtig, wenn Du den Cache leerst!",
+    "signin": "Anmelden",
+    "local": "Lokal arbeiten",
 
 
     "hello": "Hallo {name}.",

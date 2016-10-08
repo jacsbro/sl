@@ -150,7 +150,7 @@
   // Global application state
 
   // holds the current page
-  app.page = 'view1';
+  app.page = 'view0';
   app.setPage = function(aPage) {
     app.page = aPage;
   }
@@ -168,7 +168,9 @@
   // changes route to main view
   app.setMainView = function() {
     app.set('route.path', '/view1');
-    app.$.myapp_mainview.refresh();
+    if (app.$.myapp_mainview.refresh) {
+        app.$.myapp_mainview.refresh();
+    }
   }
 
   // changes route to sync view

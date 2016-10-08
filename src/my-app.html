@@ -94,7 +94,7 @@
               <paper-icon-button icon="arrow-back" on-tap="_backPressed"></paper-icon-button>
             </template>
 
-            <template is="dom-if" if="[[!_isSyncView(page)]]">
+            <template is="dom-if" if="[[_needAddbutton(page)]]">
               <paper-icon-button icon="add" on-tap="_addPressed"></paper-icon-button>
             </template>
 
@@ -113,7 +113,7 @@
               <paper-icon-button icon="menu" on-tap="_menuPressed"></paper-icon-button>
             </template>
 
-            <template is="dom-if" if="[[!_isDetailView(page)]]">
+            <template is="dom-if" if="[[_needSyncbutton(page)]]">
               <paper-icon-button icon="{{syncicon}}" on-tap="_syncPressed"></paper-icon-button>
             </template>
 
@@ -121,6 +121,7 @@
         </app-header>
 
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+          <my-view0 id="myapp_initview" name="view0" route="{{subroute}}"></my-view0>
           <my-view1 id="myapp_mainview" name="view1" route="{{subroute}}"></my-view1>
           <my-detailview id="myapp_detailview" name="detailview" data="{{detailViewData}}"></my-detailview>
           <my-syncview id="myapp_syncview" name="syncview" status="{{syncicon}}"></my-detailview>
@@ -175,7 +176,7 @@
 
       _routePageChanged: function(page) {
         console.log('_routePageChanged: ' + page)
-        this.page = page || 'view1';
+        this.page = page || 'view0';
       },
 
       _pageChanged: function(page) {
@@ -192,12 +193,19 @@
       },
 
       /**
-       * check if we are on the sync page
+       * check if we need an add button
        */
-      _isSyncView: function(page) {
-        return page === "syncview";
+      _needAddbutton: function(page) {
+        return page === "view1" || page === 'detailview';
       },
 
+
+      /**
+       * check if we need a sync button
+       */
+      _needSyncbutton: function(page) {
+        return page === "view1";
+      },
 
       /**
        * triggers back on detailview

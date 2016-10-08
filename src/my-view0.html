@@ -1,0 +1,135 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<dom-module id="my-view0">
+
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      .card {
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        border-radius: 5px;
+        background-color: var(--app-background-color);
+        color: var(--app-text-color-light);
+      }
+
+      .margin {
+        margin-top: 2rem;
+      }
+
+    </style>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
+
+    <div class="card">
+      <h1>{{localize('inithint0')}}</h1>
+      <div>{{localize('inithint1')}}</div>
+      <div>{{localize('inithint2')}}</div>
+
+      <div class="layout horizontal around-justified margin">
+        <paper-button on-tap="_signin">{{localize('signin')}}</paper-button>
+        <paper-button on-tap="_local">{{localize('local')}}</paper-button>
+      </div>
+
+      <div id="firebaseuiauthcontainer"></div>
+
+    </div>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'my-view0',
+
+      properties: {
+        status: {
+          type: String,
+          notify: true
+        },
+      },
+
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+
+      // work locally and bypass signin
+      _local: function() {
+          app.setMainView();
+      },
+
+      // signin to firebase
+      _signin: function() {
+          this._initFirebase();
+          this._signIn2Firebase();
+      },
+
+
+      // code to initialize firebase
+      _initFirebase: function() {
+        // Initialize Firebase
+        var config = {
+          apiKey: "AIzaSyCE1JCQXckJCf_j7keblp38y4Q9BIAagbM",
+          authDomain: "shoppinglist-3ec51.firebaseapp.com",
+          databaseURL: "https://shoppinglist-3ec51.firebaseio.com",
+          storageBucket: "shoppinglist-3ec51.appspot.com",
+        };
+        firebase.initializeApp(config);
+        // Get a reference to the storage service, which is used to create references in your storage bucket
+        //var storage = firebase.storage();
+
+        // Get a reference to the database service
+        var database = firebase.database();
+
+      },
+
+      // signs in to firebase
+      _signIn2Firebase: function() {
+        // FirebaseUI config.
+        var uiConfig = {
+          'signInSuccessUrl': '<url-to-redirect-to-on-success>',
+          'signInFlow': 'popup',
+          'signInOptions': [
+            firebase.auth.EmailAuthProvider.PROVIDER_ID
+          ],
+          'callbacks': {
+              'signInSuccess': function(currentUser, credential, redirectUrl) {
+                console.log('sucessful login');
+
+                app.firebase = firebase;
+                app.firebaseUser = currentUser;
+                console.log(app.firebaseUser);
+
+                app.setMainView();
+
+                return false;
+              }
+          }
+        };
+
+        // Initialize the FirebaseUI Widget using Firebase.
+        var ui = new firebaseui.auth.AuthUI(firebase.auth());
+        // The start method will wait until the DOM is loaded.
+        ui.start(this.$.firebaseuiauthcontainer, uiConfig);
+      },
+
+      // load localized messages
+      attached: function() {
+        app.I18Nregister(this);
+      },
+
+      ready: function() {
+        console.log("view0 ready ");
+      },
+    });
+
+  </script>
+
+</dom-module>
