@@ -195,7 +195,7 @@
     return app.$.myapp_mainview.$.myapp_sl.internal;
   }
 
-  // set
+  // update firebase from internal
   app.updateFirebase  = function() {
     var uid = app.getFirebaseUid();
     var doc = app.getInternal();
