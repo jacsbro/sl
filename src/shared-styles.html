@@ -26,7 +26,10 @@
       paper-button {
         color: var(--app-text-color-bright);
         background-color: var(--app-primary-color);
+        min-width: 2em;
+        height: 2em;
       }
+      
       h1 {
         font-size: 22px;
         margin: 16px 0;
@@ -89,13 +92,22 @@
           --paper-checkbox-label-spacing: 0;
           --paper-checkbox-margin: 8px 16px 8px 0;
           --paper-checkbox-vertical-align: top;
-        }
-        paper-checkbox .subtitle {
-          display: block;
-          font-size: 0.8em;
-          margin-top: 2px;
-          max-width: 150px;
-        }
+      }
+      paper-checkbox .subtitle {
+        display: block;
+        font-size: 0.8em;
+        margin-top: 2px;
+        max-width: 150px;
+      }
+
+      .smallfont {
+        font-size: 70%;
+      }
+
+      .mediumfont {
+        font-size: 80%;
+      }
+
 
     </style>
   </template>

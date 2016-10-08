@@ -50,14 +50,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
 
     <sl-store id="myapp_sl" external="{{documents}}"></sl-store>
-<!--
-    <app-toolbar class="toolbar2">
-      <paper-icon-button icon="add" on-tap="addPressed"></paper-icon-button>
-    </app-toolbar>
--->
     <div class="card">
+
+      <div class="layout horizontal end-justified">
+        <template is="dom-if" if="[[_isSignedIn(user)]]">
+          <div class="smallfont">{{localize('signedinas')}}&nbsp;{{user.email}}</div>
+        </template>
+        <template is="dom-if" if="[[!_isSignedIn(user)]]">
+          <div class="smallfont">{{localize('notsignedin')}}</div>
+        </template>
+      </div>
+
       <h1>{{localize('slmgmt')}}</h1>
-      <div>{{localize('slmgmthint')}}</div>
+      <div class="mediumfont">{{localize('slmgmthint')}}</div>
 
       <template id="myview1docs" is="dom-repeat" items="{{documents.lists}}">
         <paper-card class="margin">
@@ -86,6 +91,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-view1',
 
       properties: {
+        user: {
+          type: Object
+        },
         displayEnforcer: {
           type:Number,
           value:Math.random()
@@ -164,6 +172,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return "";
       },
 
+      _isSignedIn: function(user) {
+          if (user && user.email) {
+            return true;
+          }
+          return false;
+      },
+
       refresh: function() {
           this.displayEnforcer = Math.random();
       },
@@ -176,6 +191,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ready: function() {
         console.log("ready ");
         this.$.myapp_sl.get();
+        if (app.firebaseUser) {
+          this.set('user', app.firebaseUser);
+        }
       },
     });
 

@@ -29,8 +29,9 @@
 
     <div class="card">
       <h1>{{localize('inithint0')}}</h1>
-      <div>{{localize('inithint1')}}</div>
-      <div>{{localize('inithint2')}}</div>
+      <div class="mediumfont">{{localize('inithint1')}}</div>
+      <p></p>
+      <div class="mediumfont">{{localize('inithint2')}}</div>
 
       <div class="layout horizontal around-justified margin">
         <paper-button on-tap="_signin">{{localize('signin')}}</paper-button>
@@ -102,9 +103,7 @@
           'callbacks': {
               'signInSuccess': function(currentUser, credential, redirectUrl) {
                 console.log('sucessful login');
-
-                app.firebase = firebase;
-                app.firebaseUser = currentUser;
+                app.setFirebase(firebase, currentUser);
                 console.log(app.firebaseUser);
 
                 app.setMainView();

@@ -184,6 +184,12 @@
     app.syncicon = aSyncicon;
   }
 
+  // store firebase objects
+  app.setFirebase = function(firebase, firebaseUser) {
+    app.firebase = firebase;
+    app.firebaseUser = firebaseUser;
+  },
+
   // firebase user
   app.getFirebaseUid = function() {
     if (app.firebaseUser) {
