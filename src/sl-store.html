@@ -38,6 +38,11 @@
         app.setSyncicon("sync-disabled");
       },
 
+      saveFirebase: function(aList) {
+        this.set('internal', JSON.stringify(aList));
+        return this.get();
+      },
+
       addList: function(aList) {
         this.splice('external.lists', 0, 0, aList);
         this.save();

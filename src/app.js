@@ -258,6 +258,14 @@
     if (doc && uid) {
       firebase.database().ref('users/' + uid).set(doc);
     }
+  }
+
+  // update internal from firebase
+  app.updateLocal  = function() {
+    if (app.hasFirebaseSl()) {
+      app.$.myapp_mainview.$.myapp_sl.saveFirebase(app.firebaseSl);
+    }
 
   }
+
 })(document);

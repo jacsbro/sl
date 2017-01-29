@@ -78,6 +78,7 @@
        */
       _syncdown: function() {
         console.log("download");
+        app.updateLocal();
         app.setSyncicon("sync");
         this._goBack();
       },
