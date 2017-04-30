@@ -19,19 +19,6 @@
     window.Polymer = {lazyRegister: true, dom: 'shadow'};
 
     // load webcomponents polyfills
-    (function() {
-      if ('registerElement' in document
-          && 'import' in document.createElement('link')
-          && 'content' in document.createElement('template')) {
-        // browser has web components
-      } else {
-        // polyfill web components
-        var e = document.createElement('script');
-        e.src = 'bower_components/webcomponentsjs/webcomponents-lite.min.js';
-        document.head.appendChild(e);
-      }
-    })();
-
     // load pre-caching service worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
@@ -41,9 +28,18 @@
 
   </script>
 
+  <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+  <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+
   <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+<!--  
   <script src="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.js"></script>
   <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.css" />
+-->
+
+  <script src="https://cdn.firebase.com/libs/firebaseui/1.0.1/firebaseui.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/1.0.1/firebaseui.css" />
+
 
   <link rel="import" href="src/my-app.html">
 

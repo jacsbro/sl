@@ -100,6 +100,7 @@
           'signInOptions': [
             firebase.auth.EmailAuthProvider.PROVIDER_ID
           ],
+          credentialHelper: firebaseui.auth.CredentialHelper.NONE,
           'callbacks': {
               'signInSuccess': function(currentUser, credential, redirectUrl) {
                 console.log('sucessful login');
