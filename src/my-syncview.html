@@ -1,8 +1,25 @@
+<!--
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+-->
+
+<!-- import CSS mixin shim -->
+<link rel="import" href="../bower_components/shadycss/apply-shim.html">
+<!-- import Polymer.Element -->
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+
+
+
+
+<link rel="import" href="shared-styles.html">
 
 <dom-module id="my-syncview">
 
@@ -25,7 +42,10 @@
       }
 
     </style>
-    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
+
+    <custom-style>
+      <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
+    </custom-style>
 
     <div class="card">
       <div class="mediumfont">{{localize('synchint')}} {{localize(status)}}</div>
@@ -40,79 +60,82 @@
     </div>
 
   </template>
-
   <script>
+    class MySyncview extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
 
-    Polymer({
+      static get is() { return 'my-syncview'; }
 
-      is: 'my-syncview',
-
-      properties: {
-        status: {
-          type: String,
-          notify: true
-        },
-        // data to persist
-        data: {
-          type: Object,
-          notify: true
-        },
-      },
-
-      behaviors: [
-        Polymer.AppLocalizeBehavior
-      ],
+      static get properties() {
+        return {
+          status: {
+            type: String,
+            notify: true
+          },
+          // data to persist
+          data: {
+            type: Object,
+            notify: true
+          },
+        };
+      }
 
       /**
        * triggers upload
        */
-      _syncup: function() {
-        console.log("upload");
-        app.updateFirebase();
+      _syncup() {
+        console.log("upload not active during development!!");
+        //app.updateFirebase();
         app.setSyncicon("sync");
         this._goBack();
-      },
+      }
 
       /**
        * triggers download
        */
-      _syncdown: function() {
+      _syncdown() {
         console.log("download");
         app.updateLocal();
         app.setSyncicon("sync");
         this._goBack();
-      },
+      }
 
       // gets remote version
-      _getRemoteVersion: function() {
+      _getRemoteVersion() {
         if (app.hasFirebaseSl()) {
           return app.getFirebaseSl().version;
         }
         return "?";
-      },
+      }
 
       // gets local version
-      _getLocalVersion: function() {
+      _getLocalVersion() {
         return app.getExternal().version;
-      },
+      }
 
       /**
        * triggers download
        */
-      _goBack: function() {
+      _goBack() {
         app.setMainView();
-      },
+      }
+
+      _showPage404() {
+        this.page = 'view404';
+      }
 
       // load localized messages
-      attached: function() {
+      attached() {
+        console.log("syncview attached ");
         app.I18Nregister(this);
-      },
+      }
 
-      ready: function() {
+      ready() {
+        super.ready();
         console.log("syncview ready ");
-      },
-    });
+      }
 
+    }
+
+    window.customElements.define(MySyncview.is, MySyncview);
   </script>
-
 </dom-module>
