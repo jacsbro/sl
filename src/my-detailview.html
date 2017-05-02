@@ -1,7 +1,25 @@
+<!--
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+-->
+
+<!-- import CSS mixin shim -->
+<link rel="import" href="../bower_components/shadycss/apply-shim.html">
+<!-- import Polymer.Element -->
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-input/iron-input.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
@@ -31,7 +49,10 @@
       }
 
     </style>
-    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
+    <custom-style>
+      <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
+    </custom-style>
+
     <!-- options mode -->
     <div class="card" hidden$="{{!_isMenumode}}">
       <paper-checkbox checked="{{_isViewmodeDetail}}" class="options">
@@ -116,7 +137,10 @@
             <!-- content in brief mode -->
             <div class="card-content" hidden$="{{_isViewmodeDetail}}">
               <div class="layout horizontal around-justified">
-                <input is="iron-input" bind-value="{{item.name}}" on-change="_changed">
+                <!--<input is="iron-input" bind-value="{{item.name}}" on-change="_changed">-->
+                <iron-input bind-value="{{item.name}}" on-change="_changed">
+                  <input></input>
+                </iron-input>
                 <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(item.needed)]]" on-change="_neededChanged"></paper-checkbox>
                 <paper-checkbox id="[[item.id]]" checked="[[_isDone(item.done)]]" on-change="_doneChanged"></paper-checkbox>
               </div>
@@ -140,75 +164,74 @@
   </template>
 
   <script>
+    class MyDetailview extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
+    
+     static get is() { return 'my-detailview'; }
 
-    Polymer({
-
-      is: 'my-detailview',
-
-      properties: {
-        // data we're bound to
-        data: {
-          type: Object,
-          notify: true
-        },
-        // true if we are in menumode
-        _isMenumode: {
-          type: Boolean,
-          value: false
-        },
-        // true if we are in deletemode
-        _isDeletemode: {
-          type: Boolean,
-          value: false
-        },
-        // true if details should be displayed
-        _isViewmodeDetail: {
-          type: Boolean,
-          value: true
-        },
-        // true if only needed should be displayed
-        _isNeededmode: {
-          type: Boolean,
-          value: false
-        },
-        // true if completed should be hidden
-        _isCompletedmode: {
-          type: Boolean,
-          value: false
-        },
-        // margin depending on detailmode
-        _margin: {
-          type: String,
-          value: 'margin'
-        },
-      },
-
-      behaviors: [
-        Polymer.AppLocalizeBehavior
-      ],
+      static get properties() {
+        return {
+          // data we're bound to
+          data: {
+            type: Object,
+            notify: true
+          },
+          // true if we are in menumode
+          _isMenumode: {
+            type: Boolean,
+            value: false
+          },
+          // true if we are in deletemode
+          _isDeletemode: {
+            type: Boolean,
+            value: false
+          },
+          // true if details should be displayed
+          _isViewmodeDetail: {
+            type: Boolean,
+            value: true
+          },
+          // true if only needed should be displayed
+          _isNeededmode: {
+            type: Boolean,
+            value: false
+          },
+          // true if completed should be hidden
+          _isCompletedmode: {
+            type: Boolean,
+            value: false
+          },
+          // margin depending on detailmode
+          _margin: {
+            type: String,
+            value: 'margin'
+          },
+        };
+      }
 
       /**
        * return true if this is the first item to render
        */
-      _isFirst: function(index) {
+      _isFirst(index) {
         if (index === 0) {
           return true;
         }
         return false;
-      },
+      }
+
       /**
        * return true if this is the last item to render
        */
-      _isLast: function(index) {
+      _isLast(index) {
         if (index === this.data.currentList.items.length-1) {
           return true;
         }
         return false;
-      },
+      }
+
       /**
        * return true if this is filtered due to displaymode settings
        */
-      _isFiltered: function(neededMode, completeMode, index, needed, done) {
+      _isFiltered(neededMode, completeMode, index, needed, done) {
         var theItem = this.data.currentList.items[index];
         var isFiltered = false;
         if (this._isNeededmode && theItem.needed == false) {
@@ -218,50 +241,52 @@
           return true;
         }
         return false;
-      },
+      }
 
-      _computeMargin: function(isViewmodeDetail) {
+      _computeMargin(isViewmodeDetail) {
         if (isViewmodeDetail) {
           return "margin";
         }
         return "";
-      },
+      }
+
       /**
        * return true if this item is needed
        */
-      _isNeeded: function(needed) {
+      _isNeeded(needed) {
         return needed == true;
-      },
+      }
+
       /**
        * called when needed is changed
        */
-      _neededChanged: function(data) {
+      _neededChanged(data) {
         this._setBool(data, 'needed');
-      },
+      }
 
       /**
        * option to set everything to needed
        */
-      _allNeeded: function(data) {
+      _allNeeded(data) {
         var b = data.target.checked;
         if (b) {
           this._doAllBool(b, 'needed');
           this.$.my_detail_allneededfalse.checked = !b;
         }
-      },
+      }
 
       /**
        * option to set everything to not needed
        */
-      _allNeededfalse: function(data) {
+      _allNeededfalse(data) {
         var b = data.target.checked;
         if (b) {
           this._doAllBool(!b, 'needed');
           this.$.my_detail_allneeded.checked = !b;
         }
-      },
+      }
 
-      _doAllBool: function(b, propName) {
+      _doAllBool(b, propName) {
         var theItems = this.data.currentList.items;
         for( var i=0; i<theItems.length;i++) {
           var thePropName = 'data.currentList.items.' + i + "." + propName;
@@ -269,48 +294,48 @@
           this._changed();
         }
         this.savePressed();
-      },
-
+      }
 
       /**
        * return true if this item is done
        */
-      _isDone: function(done) {
+      _isDone(done) {
         return done == true;
-      },
+      }
+
       /**
        * called when done is changed
        */
-      _doneChanged: function(data) {
+      _doneChanged(data) {
         this._setBool(data, 'done');
-      },
+      }
 
       /**
        * option to set everything to done
        */
-      _allDone: function(data) {
+      _allDone(data) {
         var b = data.target.checked;
         if (b) {
           this._doAllBool(b, 'done');
           this.$.my_detail_alldonefalse.checked = !b;
         }
-      },
+      }
 
       /**
        * option to set everything to not done
        */
-      _allDonefalse: function(data) {
+      _allDonefalse(data) {
         var b = data.target.checked;
         if (b) {
           this._doAllBool(!b, 'done');
           this.$.my_detail_alldone.checked = !b;
         }
-      },
+      }
 
       /**
        * set a boolean property bound to a checkbox - oh my!
        */
-      _setBool: function(data, propName) {
+      _setBool(data, propName) {
         var theItems = this.data.currentList.items;
         for( var i=0; i<theItems.length;i++) {
           if(theItems[i].id === data.target.id) {
@@ -322,11 +347,12 @@
             this.set('_isCompletedmode', this._isCompletedmode);
           }
         }
-      },
+      }
+
       /**
        * add
        */
-      _addPressed: function(data) {
+      _addPressed(data) {
         var theItems = this.data.currentList.items;
         for( var i=0; i<theItems.length;i++) {
           if(theItems[i].id === data.target.id) {
@@ -334,20 +360,22 @@
             return;
           }
         }
-      },
-      addPressed: function(data) {
+      }
+      
+      addPressed(data) {
         this._newItem(0);
-      },
-      _newItem: function(index) {
+      }
+
+      _newItem(index) {
         var theNew = new ShoppingListItem("", UNIT_ST, 1, false, true);
         this.splice('data.currentList.items', index, 0, theNew);
         this._saveNeeded(true);
-      },
+      }
 
       /**
        * delete an item
        */
-      _deletePressed: function(data) {
+      _deletePressed(data) {
         var theItems = this.data.currentList.items;
         for( var i=0; i<theItems.length;i++) {
           if(theItems[i].id === data.target.id) {
@@ -356,11 +384,12 @@
             return;
           }
         }
-      },
+      }
+
       /**
        * down
        */
-      _downPressed: function(data) {
+      _downPressed(data) {
         var theItems = this.data.currentList.items;
         for( var i=0; i<theItems.length;i++) {
           if(theItems[i].id === data.target.id && i < theItems.length - 1) {
@@ -371,11 +400,12 @@
             return;
           }
         }
-      },
+      }
+
       /**
        * up
        */
-      _upPressed: function(data) {
+      _upPressed(data) {
         var theItems = this.data.currentList.items;
         for( var i=0; i<theItems.length;i++) {
           if(theItems[i].id === data.target.id && i > 0) {
@@ -386,14 +416,16 @@
             return;
           }
         }
-      },
+      } 
+
       /**
        * menumode on/off
        */
-      menuPressedOn: function() {
+      menuPressedOn() {
         this._isMenumode = true;
-      },
-      _menuPressedOff: function() {
+      }
+
+      _menuPressedOff() {
         this._isMenumode = false;
         // do not preserve the state of these checkboxes
         this.$.my_detail_allneeded.checked = false;
@@ -406,55 +438,60 @@
         } else {
           this.set('_margin', '');
         }
-      },
+      }
 
-      _deleteList: function() {
+      _deleteList() {
         this.data.slstore.deleteList(this.data.currentList);
         this._deletePressedOff();
         app.setMainView();
-      },
+      }
+
       /**
        * deletemode on/off
        */
-       deletePressedOn: function() {
+       deletePressedOn() {
          this._isDeletemode = true;
-       },
-      _deletePressedOff: function() {
+       }
+
+      _deletePressedOff() {
         this._isDeletemode = false;
-      },
+      }
+
       /**
        * save
        */
-      savePressed: function() {
+      savePressed() {
         this.data.currentList.modified = new Date();
         this.data.slstore.save();
         this._saveNeeded(false);
-      },
+      }
 
-      _saveNeeded: function(b) {
+      _saveNeeded(b) {
         app.set('isSaveNeeded', b);
-      },
+      }
 
-      _changed: function() {
+      _changed() {
         this._saveNeeded(true);
-      },
+      }
 
       /**
        * return true if we should are in normal editmode
        */
-      _isEditMode: function(menumode, deletemode) {
+      _isEditMode(menumode, deletemode) {
         return menumode === false && deletemode === false;
-      },
+      }
 
       // load localized messages
-      attached: function() {
+      attached() {
         app.I18Nregister(this);
-      },
+      }
 
-      ready: function() {
+      ready() {
+        super.ready();
         console.log("ready ");
-      },
-    });
+      }
+    }
+    window.customElements.define(MyDetailview.is, MyDetailview);
 
   </script>
 
