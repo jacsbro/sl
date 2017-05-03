@@ -9,7 +9,7 @@
       "items": [
         {
           "id": "2f87f63b-4d7b-f5db-9c41-c6c586d53dd8",
-          "name": "",
+          "name": "Test-1",
           "unit": 0,
           "qty": 1,
           "done": false,
@@ -26,7 +26,7 @@
       "items": [
         {
           "id": "b4540603-efb2-a2af-3479-7160ac5b8251",
-          "name": "",
+          "name": "Test-2",
           "unit": 0,
           "qty": 1,
           "done": false,
@@ -40,8 +40,25 @@
       "created": "2016-10-03T07:08:50.888Z",
       "modified": "2016-10-03T07:08:50.888Z",
       "version": 1,
-      "items": [],
-      "name": "3.10.2016"
+      "items": [
+         {
+          "id": "b4540603-efb2-a2af-3479-7160ac5b8251",
+          "name": "Test-3",
+          "unit": 0,
+          "qty": 1,
+          "done": false,
+          "needed": true
+        },
+        {
+          "id": "b4540603-efb2-a2af-3479-7160ac5b8251",
+          "name": "Test-4",
+          "unit": 0,
+          "qty": 1,
+          "done": false,
+          "needed": true
+        } 
+      ],
+      "name": "4.10.2016"
     }
   ]
 }

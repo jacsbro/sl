@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>kart-home</title>
+
+  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../bower_components/web-component-tester/browser.js"></script>
+
+  <!-- Import the element to test -->
+  <link rel="import" href="../src/sl-store.html">
+
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../src/app.js"></script>
+  <script src="../src/ShoppingList.js"></script>
+
+  <test-fixture id="basic">
+    <template>
+      <sl-store id="myapp_sl" external="{{documents}}"></sl-store>
+    </template>
+  </test-fixture>
+
+  <script>
+    suite('myapp_sl tests', function() {
+      var home;
+      var sl;
+      var docs;
+
+      setup(function() {
+        home = fixture('basic');
+        sl = document.querySelector('#myapp_sl');
+        docs = sl.get();
+      });
+
+      test('Shoppinglist read from localstorage is not null', function() {
+        assert(docs != null);
+        console.log('Found ' + docs.lists.length + ' shopping lists');
+      });
+
+      test('New Shoppinglist is added to localstorage', function() {
+        assert(docs != null);
+        var listCount = docs.lists.length;
+        var newList = new ShoppingList('autotest');
+        var items = [
+            'Brot',
+            'Grüner Tee',
+            'Oliven'
+        ];
+
+        for (var i=0; i<items.length; i++) {
+          var theItem = new ShoppingListItem(items[i], '', 1, false, false);
+          newList.addItem(theItem);
+        }
+        sl.addList(newList);
+
+        var listCountNew = docs.lists.length;
+        assert(listCountNew = (listCount + 1));
+
+        var a = _findAutoTest(docs);
+        assert(a != null, 'did not find new list');
+      });
+
+      function _findAutoTest(docs) {
+        for (var i=0; i<docs.lists.length; i++) {
+          if (docs.lists[i].name === 'autotest') {
+            return docs.lists[i];
+          }
+        }
+      };
+
+    });
+  </script>
+
+</body>
+</html>
