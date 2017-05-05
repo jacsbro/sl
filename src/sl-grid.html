@@ -6,6 +6,8 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+
 
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
@@ -28,13 +30,13 @@
     </custom-style>
 
     <div class="vertical-section-container centered">
-      <vaadin-grid id="slTable" dataProvider="[[dataProvider]]" size="[[size]]">
+      <vaadin-grid id="slTable" items="[[_itemsDisplay]]" size="[[size]]">
 
        <vaadin-grid-column width = "200px">
           <template class="header">
             <vaadin-grid-filter path="name" value="[[_filterName]]" on-value-changed="_filterChanged">
               <vaadin-grid-sorter id="name" path="name" on-direction-changed="_directionChanged" slot="filter">
-                <input placeholder="xxx" value="{{_filterName::input}}" focus-target>
+                <input placeholder="{{localize('article')}}" value="{{_filterName::input}}" focus-target>
               </vaadin-grid-sorter>
             </vaadin-grid-filter>
           </template>
@@ -42,13 +44,22 @@
         </vaadin-grid-column>
 
         <vaadin-grid-column>
-          <template class="header">{{localize('needed')}}</template>
-          <template>{{item.needed}}</template>
+          <template class="header">{{localize('quantity')}}</template>
+          <template>{{item.qty}}</template>
         </vaadin-grid-column>
 
         <vaadin-grid-column>
-          <template class="header">{{localize('done')}}</template>
-          <template>{{item.done}}</template>
+          <template class="header">
+            <paper-checkbox checked="{{_isNeededmode}}" on-change="_neededModeChanged">Nur benötigte anzeigen</paper-checkbox>
+          </template>
+          <template><paper-checkbox id="[[item.id]]" checked="{{item.needed}}" on-change="_neededChanged"></paper-checkbox></template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">
+            <paper-checkbox checked="{{_isCompletedmode}}" on-change="_completedModeChanged">Erledigte ausblenden</paper-checkbox>
+          </template>
+          <template><paper-checkbox id="[[item.id]]" checked="{{item.done}}" on-change="_doneChanged"></paper-checkbox></template>
         </vaadin-grid-column>
 
       </vaadin-grid>
@@ -68,6 +79,25 @@
             notify: true,
             observer: '_dataChanged'
           },
+
+          // shopping list to show
+          _itemsDisplay: {
+            type: Array,
+            notify: true
+          },
+
+          // true if only needed should be displayed
+          __isNeededmode: {
+            type: Boolean,
+            value: false,
+            notify: true
+          },
+
+          // true if completed should be hidden
+          _isCompletedmode: {
+            type: Boolean,
+            value: false
+          },          
         };
       }
 
@@ -75,17 +105,108 @@
       _dataChanged(aData) {
         if (aData && aData.items) {
           console.log("setting shopping list to sl-grid (" + aData.items.length + " items)");
-          this.$.slTable.size = aData.items.length;
-          this.$.slTable.dataProvider = function(params, callback) {
-            var temp = [];
-            var index = params.page * params.pageSize;
-              for (var i=index; i < (index + params.pageSize) && i < aData.items.length; i++) {
-                temp.push(aData.items[i]);
-              }
-              console.log("returning " + temp.length + " items from index " + index + " to " + (i-1) );
-              callback(temp);
-          }.bind(this);
+          this._itemsDisplay = aData.items.slice(0);
         }
+      }
+
+      //-----------------------------------------------------------------------
+      // code for needed property
+      //-----------------------------------------------------------------------
+       // called when needed is changed on an article
+      _neededChanged(e) {
+        var checked = e.target.checked;
+        var id = e.target.id;
+        if (this._isNeededmode && !checked) {
+          this._spliceId(id);
+        }
+      }
+
+       // called when needed mode is changed
+      _neededModeChanged(e) {
+        var checked = e.target.checked;
+        var tmp = [];
+        if (checked) {
+          for (var i=0; i<this.data.items.length; i++) {
+            if (this.data.items[i].needed) {
+              if (!this._isFiltered(this.data.items[i], true)) {
+                tmp.push(this.data.items[i]);
+              }
+            }
+          }
+        } else {
+          tmp = this._copyAll(true);
+        }
+        this.set('_itemsDisplay', tmp);
+      }
+
+      //-----------------------------------------------------------------------
+      // code for done property
+      //-----------------------------------------------------------------------
+       // called when done is changed on an article
+      _doneChanged(e) {
+        var checked = e.target.checked;
+        var id = e.target.id;
+        if (this._isCompletedmode && checked) {
+          this._spliceId(id);
+        }
+      }
+
+       // called when needed mode is changed
+      _completedModeChanged(e) {
+        var checked = e.target.checked;
+        var tmp = [];
+        if (checked) {
+          for (var i=0; i<this.data.items.length; i++) {
+            if (!this.data.items[i].done) {
+              if (!this._isFiltered(this.data.items[i], false)) {
+                tmp.push(this.data.items[i]);
+              }
+            }
+          }
+        } else {
+          tmp = this._copyAll(false);
+        }
+        this.set('_itemsDisplay', tmp);
+      }
+
+      //-----------------------------------------------------------------------
+      // helper code
+      //-----------------------------------------------------------------------
+      // remove given id from displayed items
+      _spliceId(id) {
+        for (var i=0; i<this._itemsDisplay.length; i++) {
+          if (this._itemsDisplay[i].id === id) {
+            this.splice('_itemsDisplay', i, 1);
+            return;
+          }
+        }
+      }
+
+      // when a  header checkbox has been checked we need to copy over all
+      // items respecting the filter of the other header checkbox
+      _copyAll(neededChanged) {
+        var tmp = [];
+        for (var i=0; i<this.data.items.length; i++) {
+          if (!this._isFiltered(this.data.items[i], neededChanged)) {
+            tmp.push(this.data.items[i]);
+          }
+        }
+        return tmp;
+      }
+
+      // check weather an item is filtered when something is changed
+      _isFiltered(item, neededChanged) {
+          var filter = false;
+          if (neededChanged) {
+            if (this._isCompletedmode && item.done) {
+              filter = true;
+            }
+          } else {
+            if (this._isNeededmode && !item.needed) {
+              filter = true;
+            }          
+          }
+          return filter;    
       }
       
       // load localized messages
