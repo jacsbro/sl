@@ -1,0 +1,106 @@
+<!-- import CSS mixin shim -->
+<link rel="import" href="../bower_components/shadycss/apply-shim.html">
+<!-- import Polymer.Element -->
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="sl-grid">
+
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <custom-style>
+      <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
+    </custom-style>
+
+    <div class="vertical-section-container centered">
+      <vaadin-grid id="slTable" dataProvider="[[dataProvider]]" size="[[size]]">
+
+       <vaadin-grid-column width = "200px">
+          <template class="header">
+            <vaadin-grid-filter path="name" value="[[_filterName]]" on-value-changed="_filterChanged">
+              <vaadin-grid-sorter id="name" path="name" on-direction-changed="_directionChanged" slot="filter">
+                <input placeholder="xxx" value="{{_filterName::input}}" focus-target>
+              </vaadin-grid-sorter>
+            </vaadin-grid-filter>
+          </template>
+          <template><div id="[[item.id]]">[[item.name]]</div></template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">{{localize('needed')}}</template>
+          <template>{{item.needed}}</template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column>
+          <template class="header">{{localize('done')}}</template>
+          <template>{{item.done}}</template>
+        </vaadin-grid-column>
+
+      </vaadin-grid>
+    </div>
+
+  </template>
+  <script>
+    class SlGrid extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
+
+      static get is() { return 'sl-grid'; }
+
+      static get properties() {
+        return {
+          // shopping list to show
+          data: {
+            type: Object,
+            notify: true,
+            observer: '_dataChanged'
+          },
+        };
+      }
+
+      // observer for changed data
+      _dataChanged(aData) {
+        if (aData && aData.items) {
+          console.log("setting shopping list to sl-grid (" + aData.items.length + " items)");
+          this.$.slTable.size = aData.items.length;
+          this.$.slTable.dataProvider = function(params, callback) {
+            var temp = [];
+            var index = params.page * params.pageSize;
+              for (var i=index; i < (index + params.pageSize) && i < aData.items.length; i++) {
+                temp.push(aData.items[i]);
+              }
+              console.log("returning " + temp.length + " items from index " + index + " to " + (i-1) );
+              callback(temp);
+          }.bind(this);
+        }
+      }
+      
+      // load localized messages
+      attached() {
+        console.log("sl-grid attached ");
+        app.I18Nregister(this);
+      }
+
+      ready() {
+        super.ready();
+        console.log("sl-grid ready ");
+      }
+
+    }
+
+    window.customElements.define(SlGrid.is, SlGrid);
+  </script>
+</dom-module>

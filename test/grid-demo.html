@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>grid-demo</title>
+
+  <!--<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>-->
+
+  <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+  <script src="../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+
+  <link rel="import" href="../bower_components/polymer/polymer.html">
+
+  <!-- Import the element to test -->
+  <link rel="import" href="../src/sl-store.html">
+  <link rel="import" href="../src/sl-grid.html">
+
+</head>
+<body>
+  <div id="app"></div>
+  <script src="../src/app.js"></script>
+  <script src="../src/ShoppingList.js"></script>
+
+  <grid-demo></grid-demo>
+  <dom-module id="grid-demo">
+    <template>
+      <sl-store id="myapp_sl"></sl-store>
+      <sl-grid id="myapp_slgrid" data={{_list}}></sl-grid>
+    </template>
+    <script>
+      addEventListener('WebComponentsReady', function() {
+        Polymer({
+          is: 'grid-demo',
+
+          properties: {
+            _list: {
+              type: Object
+            },
+          },
+
+          ready: function() {
+            var newList = new ShoppingList('demotest');
+            var items = [
+                'Pizza',
+                'Bier',
+                'Chips'
+            ];
+
+            for (var i=0; i<items.length; i++) {
+              var theItem = new ShoppingListItem(items[i], '', 1, false, false);
+              newList.addItem(theItem);
+            }
+            this.$.myapp_sl.addList(newList);
+            this.set('_list', newList);
+          }
+        });
+      });
+    </script>
+  </dom-module>
+
+</body>
+</html>
