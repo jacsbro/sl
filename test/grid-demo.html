@@ -4,14 +4,20 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>grid-demo</title>
 
-  <!--<script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>-->
-
   <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
   <script src="../bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  
+  <!-- import CSS mixin shim -->
+  <link rel="import" href="../bower_components/shadycss/apply-shim.html">
+  
+  <!-- import Polymer.Element -->
+  <link rel="import" href="../bower_components/polymer/polymer-element.html">
 
-  <link rel="import" href="../bower_components/polymer/polymer.html">
+  <!-- import 3rd-party elements -->
+  <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-  <!-- Import the element to test -->
+
+  <!-- import demo elements -->
   <link rel="import" href="../src/sl-store.html">
   <link rel="import" href="../src/sl-grid.html">
 
@@ -23,38 +29,55 @@
 
   <grid-demo></grid-demo>
   <dom-module id="grid-demo">
+    
     <template>
+      <style include="shared-styles"></style>
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+
+      <custom-style>
+        <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors"></style>
+      </custom-style>
       <sl-store id="myapp_sl"></sl-store>
       <sl-grid id="myapp_slgrid" data={{_list}}></sl-grid>
     </template>
-    <script>
-      addEventListener('WebComponentsReady', function() {
-        Polymer({
-          is: 'grid-demo',
 
-          properties: {
+    <script>
+      class GridDemo extends Polymer.Element {
+
+        static get is() { return 'grid-demo'; }
+
+        static get properties() {
+          return {
             _list: {
               type: Object
             },
-          },
+          };
+        }
 
-          ready: function() {
-            var newList = new ShoppingList('demotest');
-            var items = [
-                'Pizza',
-                'Bier',
-                'Chips'
-            ];
+        ready() {
+          super.ready();
+          console.log("grid-demo ready");
+          var newList = new ShoppingList('demotest');
+          var items = [
+              'Pizza',
+              'Bier',
+              'Chips'
+          ];
 
-            for (var i=0; i<items.length; i++) {
-              var theItem = new ShoppingListItem(items[i], '', 1, false, false);
-              newList.addItem(theItem);
-            }
-            this.$.myapp_sl.addList(newList);
-            this.set('_list', newList);
+          for (var i=0; i<items.length; i++) {
+            var theItem = new ShoppingListItem(items[i], '', 1, false, false);
+            newList.addItem(theItem);
           }
-        });
-      });
+          this.$.myapp_sl.addList(newList);
+          this.set('_list', newList);
+        }
+      }
+
+      window.customElements.define(GridDemo.is, GridDemo);
     </script>
   </dom-module>
 
