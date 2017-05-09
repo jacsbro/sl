@@ -13,6 +13,7 @@
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
 
+<link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="sl-grid">
@@ -30,9 +31,9 @@
     </custom-style>
 
     <div class="vertical-section-container centered">
-      <vaadin-grid id="slTable" items="[[_itemsDisplay]]" size="[[size]]">
+      <vaadin-grid id="slTable" items="[[_itemsDisplay]]" size="[[size]]" style="height: 90vh">
 
-       <vaadin-grid-column width = "200px">
+       <vaadin-grid-column width = "50%">
           <template class="header">
             <vaadin-grid-filter path="name" value="[[_filterName]]" on-value-changed="_filterChanged">
               <vaadin-grid-sorter id="name" path="name" on-direction-changed="_directionChanged" slot="filter">
@@ -43,23 +44,31 @@
           <template><div id="[[item.id]]">[[item.name]]</div></template>
         </vaadin-grid-column>
 
-        <vaadin-grid-column>
-          <template class="header">{{localize('quantity')}}</template>
+        <vaadin-grid-column width = "10%">
+          <template class="header"></template>
           <template>{{item.qty}}</template>
         </vaadin-grid-column>
 
-        <vaadin-grid-column>
+        <vaadin-grid-column width = "10%">
           <template class="header">
-            <paper-checkbox checked="{{_isNeededmode}}" on-change="_neededModeChanged">Nur benötigte anzeigen</paper-checkbox>
+            <paper-checkbox checked="{{_isNeededmode}}" on-change="_neededModeChanged"></paper-checkbox>
           </template>
           <template><paper-checkbox id="[[item.id]]" checked="{{item.needed}}" on-change="_neededChanged"></paper-checkbox></template>
         </vaadin-grid-column>
 
-        <vaadin-grid-column>
+        <vaadin-grid-column width = "10%">
           <template class="header">
-            <paper-checkbox checked="{{_isCompletedmode}}" on-change="_completedModeChanged">Erledigte ausblenden</paper-checkbox>
+            <paper-checkbox checked="{{_isCompletedmode}}" on-change="_completedModeChanged"></paper-checkbox>
           </template>
           <template><paper-checkbox id="[[item.id]]" checked="{{item.done}}" on-change="_doneChanged"></paper-checkbox></template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column width = "10%">
+          <template><paper-icon-button id="[[item.id]]" icon="add" on-tap="_addPressed"></paper-icon-button></template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column width = "10%">
+          <template><paper-icon-button id="[[item.id]]" icon="delete" on-tap="_deletePressed"></paper-icon-button></template>
         </vaadin-grid-column>
 
       </vaadin-grid>
@@ -108,6 +117,54 @@
           this._itemsDisplay = aData.items.slice(0);
         }
       }
+
+      //-----------------------------------------------------------------------
+      // add an item
+      //-----------------------------------------------------------------------
+      /**
+       * add
+       */
+      _addPressed(data) {
+        for( var i=0; i<this._itemsDisplay.length;i++) {
+          if(this._itemsDisplay[i].id === data.target.id) {
+            this._newItem(i+1, data.target.id);
+            return;
+          }
+        }
+      }
+
+      _newItem(index, idBefore) {
+        var theNew = new ShoppingListItem("", UNIT_ST, 1, false, true);
+        this.splice('_itemsDisplay', index, 0, theNew);
+        for (var i=0; i<this.data.items.length; i++) {
+          if (this.data.items[i].id === idBefore) {
+            this.splice('data.items', i, 0, theNew);
+            return;
+          }
+        }
+      }
+
+      //-----------------------------------------------------------------------
+      // delete an item
+      //-----------------------------------------------------------------------
+      /**
+       * delete an item
+       */
+      _deletePressed(data) {
+        var id2Delete = data.target.id;
+        for( var i=0; i<this._itemsDisplay.length;i++) {
+          if(this._itemsDisplay[i].id === id2Delete) {
+            this.splice('_itemsDisplay', i, 1);
+            for (var j=0; j<this.data.items.length; j++) {
+              if (this.data.items[j].id === id2Delete) {
+                this.splice('data.items', j, 1);
+                return;
+              }
+            }
+          }
+        }
+      }
+
 
       //-----------------------------------------------------------------------
       // code for needed property
