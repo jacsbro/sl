@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 
 
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
@@ -42,19 +43,12 @@
               </vaadin-grid-sorter>
             </vaadin-grid-filter>
           </template>
-          <template><div id="name" on-tap="_toggleExpanded">[[item.name]]</div></template>
-          <template class="row-details">
-            <div style="width: 100%">
-              <input id="name-[[item.id]]" value="[[item.name]]" on-focusout="_storeName" style="width: 40%" class="marginleft">
-              <input id="qty-[[item.id]]" value="[[item.qty]]" on-focusout="_storeQty" style="width: 10%" class="marginleft">
-              <paper-icon-button icon="check" on-tap="_toggleExpanded"></paper-icon-button>
-            </div>
-          </template>
+          <template><div id="name" on-tap="_openDialog">[[item.name]]</div></template>
         </vaadin-grid-column>
 
         <vaadin-grid-column width = "10%">
           <template class="header"></template>
-          <template><div id="qty" on-tap="_toggleExpanded">[[item.qty]]</div></template>
+          <template><div id="qty" on-tap="_openDialog">[[item.qty]]</div></template>
         </vaadin-grid-column>
 
         <vaadin-grid-column width = "10%">
@@ -92,6 +86,20 @@
       <div id="helpdialogcontent"></div>
       <div class="layout horizontal around-justified margin">
         <paper-button dialog-confirm autofocus>OK</paper-button>
+      </div>
+    </paper-dialog>
+
+    <paper-dialog id="editdialog">
+      <div class="card-content">
+        <paper-input id="nameinput" label="{{localize('article')}}" value="{{edit.name}}" on-change="_closeDialog" autofocus></paper-input>
+        <div class="layout horizontal around-justified">
+          <paper-input  id="qtyinput" label="{{localize('quantity')}}" value="{{edit.qty}}" type="number"></paper-input>
+          <paper-input label="{{localize('unit')}}" value="{{edit.unit}}" type="number"></paper-input>
+        </div>
+      </div>
+        
+      <div class="layout horizontal around-justified margin">
+        <paper-button dialog-confirm on-tap="_endEdit">OK</paper-button>
       </div>
     </paper-dialog>
 
@@ -150,8 +158,11 @@
           if(this._itemsDisplay[i].id === data.target.id) {
             var theNew = this._newItem(i+1, data.target.id);
             this.async(function() {
-              this.$.slTable.expandItem(theNew);
-              this._focusName(theNew);
+              // this.$.slTable.expandItem(theNew);
+              // this._focusName(theNew);
+              this.set('edit', theNew);
+              this.$.editdialog.open(); 
+              this._focusEl(this.$.nameinput);
             }, 100); 
             return;
           }
@@ -173,62 +184,30 @@
       //-----------------------------------------------------------------------
       // edit an item
       //-----------------------------------------------------------------------
-
-      _toggleExpanded(e)  {
+      // opens the edit dialog
+      _openDialog(e)  {
         var item = e.model.item;
-        if (e.model.expanded) {
-          this.$.slTable.collapseItem(item);
-        } else {
-          this.$.slTable.expandItem(item);
-          if (e.target.id.includes("qty")) {
-            this._focusQty(item);  
-          } else {
-            this._focusName(item);
-          }
-        }
-        
+        this.set('edit', e.model.item);
+        this.$.editdialog.open(); 
+        this._focusEl(this.$.nameinput);
       }
 
-      _storeName(e) {
-        var item = e.model.item;
-        if (item) {
-          item.name = e.target.value;
-          this._clearCache();
-        }        
+      // closes the edit dialog
+      _closeDialog()  {
+        this.$.editdialog.close(); 
+        this._endEdit();
       }
 
-      _storeQty(e) {
-        var item = e.model.item;
-        if (item) {
-          item.qty = e.target.value;
-          this._clearCache();
-        }        
-      }
-
-      _clearCache() {
+      // done editing
+      _endEdit() {
         this.$.slTable.clearCache();
       }
 
-      _focusName(item) {
-        this._focusId(this._getNameId(item));
-      }
-
-      _focusQty(item) {
-        this._focusId(this._getQtyId(item));
-      }
-
-      _getNameId(item) {
-        return '#name-' + item.id;
-      }
-
-      _getQtyId(item) {
-        return '#qty-' + item.id;
-      }
-
-      _focusId(id) {
-        var el = this.$.slTable.querySelector(id);
-        el.focus();
-        el.setSelectionRange(0, el.value.length)
+      _focusEl(el) {
+        this.async(function() {
+          //el.$.input.focus(); does not work
+          el.inputElement.inputElement.setSelectionRange(0, el.value.length)
+        }, 1000);
       }
 
       //-----------------------------------------------------------------------
