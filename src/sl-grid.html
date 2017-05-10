@@ -36,17 +36,24 @@
        <vaadin-grid-column width = "50%">
           <template class="header">
             <vaadin-grid-filter path="name" value="[[_filterName]]" on-value-changed="_filterChanged">
-              <vaadin-grid-sorter id="name" path="name" on-direction-changed="_directionChanged" slot="filter">
+              <vaadin-grid-sorter id="name" path="name" slot="filter">
                 <input placeholder="{{localize('article')}}" value="{{_filterName::input}}" focus-target>
               </vaadin-grid-sorter>
             </vaadin-grid-filter>
           </template>
-          <template><div id="[[item.id]]">[[item.name]]</div></template>
+          <template><div id="name" on-tap="_toggleExpanded">[[item.name]]</div></template>
+          <template class="row-details">
+            <div style="width: 100%">
+              <input id="name-[[item.id]]" value="[[item.name]]" on-focusout="_storeName" style="width: 40%" class="marginleft">
+              <input id="qty-[[item.id]]" value="[[item.qty]]" on-focusout="_storeQty" style="width: 10%" class="marginleft">
+              <paper-icon-button icon="check" on-tap="_toggleExpanded"></paper-icon-button>
+            </div>
+          </template>
         </vaadin-grid-column>
 
         <vaadin-grid-column width = "10%">
           <template class="header"></template>
-          <template>{{item.qty}}</template>
+          <template><div id="qty" on-tap="_toggleExpanded">[[item.qty]]</div></template>
         </vaadin-grid-column>
 
         <vaadin-grid-column width = "10%">
@@ -142,6 +149,68 @@
             return;
           }
         }
+      }
+
+
+      //-----------------------------------------------------------------------
+      // edit an item
+      //-----------------------------------------------------------------------
+
+      _toggleExpanded(e)  {
+        var item = e.model.item;
+        if (e.model.expanded) {
+          this.$.slTable.collapseItem(item);
+        } else {
+          this.$.slTable.expandItem(item);
+          if (e.target.id.includes("qty")) {
+            this._focusQty(item);  
+          } else {
+            this._focusName(item);
+          }
+        }
+        
+      }
+
+      _storeName(e) {
+        var item = e.model.item;
+        if (item) {
+          item.name = e.target.value;
+          this._clearCache();
+        }        
+      }
+
+      _storeQty(e) {
+        var item = e.model.item;
+        if (item) {
+          item.qty = e.target.value;
+          this._clearCache();
+        }        
+      }
+
+      _clearCache() {
+        this.$.slTable.clearCache();
+      }
+
+      _focusName(item) {
+        this._focusId(this._getNameId(item));
+      }
+
+      _focusQty(item) {
+        this._focusId(this._getQtyId(item));
+      }
+
+      _getNameId(item) {
+        return '#name-' + item.id;
+      }
+
+      _getQtyId(item) {
+        return '#qty-' + item.id;
+      }
+
+      _focusId(id) {
+        var el = this.$.slTable.querySelector(id);
+        el.focus();
+        el.setSelectionRange(0, el.value.length)
       }
 
       //-----------------------------------------------------------------------
