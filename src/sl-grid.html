@@ -7,6 +7,7 @@
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
 
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
@@ -58,14 +59,20 @@
 
         <vaadin-grid-column width = "10%">
           <template class="header">
-            <paper-checkbox checked="{{_isNeededmode}}" on-change="_neededModeChanged"></paper-checkbox>
+            <span>
+              <paper-checkbox checked="{{_isNeededmode}}" on-change="_neededModeChanged"></paper-checkbox>
+              <paper-icon-button icon="help" on-tap="_helpNeeded"></paper-icon-button>
+            </span>
           </template>
           <template><paper-checkbox id="[[item.id]]" checked="{{item.needed}}" on-change="_neededChanged"></paper-checkbox></template>
         </vaadin-grid-column>
 
         <vaadin-grid-column width = "10%">
           <template class="header">
-            <paper-checkbox checked="{{_isCompletedmode}}" on-change="_completedModeChanged"></paper-checkbox>
+            <span>
+              <paper-checkbox checked="{{_isCompletedmode}}" on-change="_completedModeChanged"></paper-checkbox>
+              <paper-icon-button icon="help" on-tap="_helpCompleted"></paper-icon-button>
+            </span>
           </template>
           <template><paper-checkbox id="[[item.id]]" checked="{{item.done}}" on-change="_doneChanged"></paper-checkbox></template>
         </vaadin-grid-column>
@@ -80,6 +87,13 @@
 
       </vaadin-grid>
     </div>
+
+    <paper-dialog id="helpdialog">
+      <div id="helpdialogcontent"></div>
+      <div class="layout horizontal around-justified margin">
+        <paper-button dialog-confirm autofocus>OK</paper-button>
+      </div>
+    </paper-dialog>
 
   </template>
   <script>
@@ -134,7 +148,11 @@
       _addPressed(data) {
         for( var i=0; i<this._itemsDisplay.length;i++) {
           if(this._itemsDisplay[i].id === data.target.id) {
-            this._newItem(i+1, data.target.id);
+            var theNew = this._newItem(i+1, data.target.id);
+            this.async(function() {
+              this.$.slTable.expandItem(theNew);
+              this._focusName(theNew);
+            }, 100); 
             return;
           }
         }
@@ -146,7 +164,7 @@
         for (var i=0; i<this.data.items.length; i++) {
           if (this.data.items[i].id === idBefore) {
             this.splice('data.items', i, 0, theNew);
-            return;
+            return theNew;
           }
         }
       }
@@ -295,6 +313,19 @@
         this.set('_itemsDisplay', tmp);
       }
 
+
+      //-----------------------------------------------------------------------
+      // help
+      //-----------------------------------------------------------------------      
+      _helpCompleted() {
+        this.$.helpdialogcontent.innerHTML = this.localize('completedmodehint');
+        this.$.helpdialog.open(); 
+      }
+      _helpNeeded() {
+        this.$.helpdialogcontent.innerHTML = this.localize('neededmodehint');
+        this.$.helpdialog.open(); 
+      }
+
       //-----------------------------------------------------------------------
       // helper code
       //-----------------------------------------------------------------------
@@ -335,6 +366,7 @@
           return filter;    
       }
       
+
       // load localized messages
       attached() {
         console.log("sl-grid attached ");
