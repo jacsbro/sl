@@ -91,7 +91,7 @@
 
     <paper-dialog id="editdialog">
       <div class="card-content">
-        <paper-input id="nameinput" label="{{localize('article')}}" value="{{edit.name}}" on-change="_closeDialog" autofocus></paper-input>
+        <paper-input id="nameinput" label="{{localize('article')}}" value="{{edit.name}}" autofocus></paper-input>
         <div class="layout horizontal around-justified">
           <paper-input  id="qtyinput" label="{{localize('quantity')}}" value="{{edit.qty}}" type="number"></paper-input>
           <paper-input label="{{localize('unit')}}" value="{{edit.unit}}" type="number"></paper-input>
@@ -99,7 +99,7 @@
       </div>
         
       <div class="layout horizontal around-justified margin">
-        <paper-button dialog-confirm on-tap="_endEdit">OK</paper-button>
+        <paper-button dialog-confirm on-tap="endEdit">OK</paper-button>
       </div>
     </paper-dialog>
 
@@ -151,19 +151,23 @@
       // add an item
       //-----------------------------------------------------------------------
       /**
-       * add
+       * add to front of list
+       */
+      addPressed() {
+        var theNew = this._newItem(0, null);
+        this._startEdit(theNew);
+      }
+
+
+
+      /**
+       * add below current item
        */
       _addPressed(data) {
         for( var i=0; i<this._itemsDisplay.length;i++) {
           if(this._itemsDisplay[i].id === data.target.id) {
             var theNew = this._newItem(i+1, data.target.id);
-            this.async(function() {
-              // this.$.slTable.expandItem(theNew);
-              // this._focusName(theNew);
-              this.set('edit', theNew);
-              this.$.editdialog.open(); 
-              this._focusEl(this.$.nameinput);
-            }, 100); 
+            this._startEdit(theNew);
             return;
           }
         }
@@ -172,14 +176,26 @@
       _newItem(index, idBefore) {
         var theNew = new ShoppingListItem("", UNIT_ST, 1, false, true);
         this.splice('_itemsDisplay', index, 0, theNew);
-        for (var i=0; i<this.data.items.length; i++) {
-          if (this.data.items[i].id === idBefore) {
-            this.splice('data.items', i, 0, theNew);
-            return theNew;
+        if (idBefore) {
+          for (var i=0; i<this.data.items.length; i++) {
+            if (this.data.items[i].id === idBefore) {
+              this.splice('data.items', i, 0, theNew);
+              return theNew;
+            }
           }
+        } else {
+          this.splice('data.items', 0, 0, theNew);
         }
       }
 
+      // opens edit dialog 
+      _startEdit(item) {
+        this.async(function() {
+          this.set('edit', item);
+          this.$.editdialog.open(); 
+          this._focusEl(this.$.nameinput);
+        }, 100);         
+      }
 
       //-----------------------------------------------------------------------
       // edit an item
@@ -195,11 +211,11 @@
       // closes the edit dialog
       _closeDialog()  {
         this.$.editdialog.close(); 
-        this._endEdit();
+        this.endEdit();
       }
 
       // done editing
-      _endEdit() {
+      endEdit() {
         this.$.slTable.clearCache();
       }
 
@@ -208,6 +224,25 @@
           //el.$.input.focus(); does not work
           el.inputElement.inputElement.setSelectionRange(0, el.value.length)
         }, 1000);
+      }
+
+      //-----------------------------------------------------------------------
+      // applies menu mode changes to both arrays
+      //-----------------------------------------------------------------------
+      handleMenuChanges(flag, name) {
+        for( var i=0; i<this.data.items.length; i++) {
+          var item = this.data.items[i];
+          item[name] = flag;
+        }
+        for( var i=0; i<this._itemsDisplay.length; i++) {
+          var item = this._itemsDisplay[i];
+          item[name] = flag;
+          if (name === 'needed') {
+            this._neededChanged2(flag, item.id);
+          } else {
+            this._doneChanged2(flag, item.id);
+          }
+        }
       }
 
       //-----------------------------------------------------------------------
@@ -237,8 +272,10 @@
       //-----------------------------------------------------------------------
        // called when needed is changed on an article
       _neededChanged(e) {
-        var checked = e.target.checked;
-        var id = e.target.id;
+        this._neededChanged2(e.target.checked, e.target.id);
+      }
+
+      _neededChanged2(checked, id) {
         if (this._isNeededmode && !checked) {
           this._spliceId(id);
         }
@@ -267,11 +304,13 @@
       //-----------------------------------------------------------------------
        // called when done is changed on an article
       _doneChanged(e) {
-        var checked = e.target.checked;
-        var id = e.target.id;
+        this._doneChanged2(e.target.checked, e.target.id);
+      }
+
+      _doneChanged2(checked, id) {
         if (this._isCompletedmode && checked) {
           this._spliceId(id);
-        }
+        }        
       }
 
        // called when needed mode is changed

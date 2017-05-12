@@ -1,17 +1,3 @@
-<!--
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../bower_components/iron-input/iron-input.html">
-<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
--->
-
 <!-- import CSS mixin shim -->
 <link rel="import" href="../bower_components/shadycss/apply-shim.html">
 <!-- import Polymer.Element -->
@@ -26,6 +12,8 @@
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="sl-grid.html">
 
 <dom-module id="my-detailview">
 
@@ -54,19 +42,6 @@
 
     <!-- options mode -->
     <div class="card" hidden$="{{!_isMenumode}}">
-      <paper-checkbox checked="{{_isViewmodeDetail}}" class="options">
-        {{localize('viewmode')}}
-        <span class="subtitle">
-          {{localize('viewmodehint')}}
-        </span>
-      </paper-checkbox>
-      <hr></hr>
-      <paper-checkbox checked="{{_isNeededmode}}" class="options">
-        {{localize('neededmode')}}
-        <span class="subtitle">
-          {{localize('neededmodehint')}}
-        </span>
-      </paper-checkbox>
       <paper-checkbox id="my_detail_allneeded" on-change="_allNeeded" class="options">
         {{localize('allneeded')}}
         <span class="subtitle">
@@ -80,12 +55,6 @@
         </span>
       </paper-checkbox>
       <hr></hr>
-      <paper-checkbox checked="{{_isCompletedmode}}" class="options">
-        {{localize('completedmode')}}
-        <span class="subtitle">
-          {{localize('completedmodehint')}}
-        </span>
-      </paper-checkbox>
       <paper-checkbox id="my_detail_alldone" on-change="_allDone" class="options">
         {{localize('alldone')}}
         <span class="subtitle">
@@ -116,48 +85,7 @@
     <!-- normal mode mode -->
     <div class="card" hidden$="{{!_isEditMode(_isMenumode, _isDeletemode)}}">
       <paper-input label="{{localize('name')}}" value="{{data.currentList.name}}" on-change="_changed"></paper-input>
-
-      <template is="dom-repeat" items="{{data.currentList.items}}">
-
-        <template is="dom-if" if="[[!_isFiltered(_isNeededmode, _isCompletedmode, index, item.needed, item.done)]]">
-          <paper-card class$="{{_margin}}">
-            <!-- content in detail mode -->
-            <div class="card-content" hidden$="{{!_isViewmodeDetail}}">
-              <paper-input label="{{localize('article')}}" value="{{item.name}}" on-change="_changed"></paper-input>
-              <div class="layout horizontal around-justified">
-                <paper-input label="{{localize('quantity')}}" value="{{item.qty}}" type="number" on-change="_changed"></paper-input>
-                <paper-input label="{{localize('unit')}}" value="{{item.unit}}" type="number" on-change="_changed"></paper-input>
-              </div>
-              <div class="layout horizontal around-justified">
-                <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(item.needed)]]" on-change="_neededChanged">{{localize('needed')}}</paper-checkbox>
-                <paper-checkbox id="[[item.id]]" checked="[[_isDone(item.done)]]" on-change="_doneChanged">{{localize('done')}}</paper-checkbox>
-              </div>
-            </div>
-            <!-- content in brief mode -->
-            <div class="card-content" hidden$="{{_isViewmodeDetail}}">
-              <div class="layout horizontal around-justified">
-                <!--<input is="iron-input" bind-value="{{item.name}}" on-change="_changed">-->
-                <iron-input bind-value="{{item.name}}" on-change="_changed">
-                  <input></input>
-                </iron-input>
-                <paper-checkbox id="[[item.id]]" checked="[[_isNeeded(item.needed)]]" on-change="_neededChanged"></paper-checkbox>
-                <paper-checkbox id="[[item.id]]" checked="[[_isDone(item.done)]]" on-change="_doneChanged"></paper-checkbox>
-              </div>
-            </div>
-
-            <!-- actions visible in detail mode -->
-            <div class="card-actions" hidden$="{{!_isViewmodeDetail}}">
-              <div class="layout horizontal around-justified">
-                <div><paper-icon-button id="[[item.id]]" icon="add" on-tap="_addPressed"></paper-icon-button></div>
-                <div hidden$="{{_isFirst(index)}}"><paper-icon-button id="[[item.id]]" icon="arrow-upward" on-tap="_upPressed"></paper-icon-button></div>
-                <div hidden$="{{_isLast(index)}}"><paper-icon-button id="[[item.id]]" icon="arrow-downward" on-tap="_downPressed"></paper-icon-button></div>
-                <div><paper-icon-button id="[[item.id]]" icon="delete" on-tap="_deletePressed"></paper-icon-button></div>
-              </div>
-            </div>
-          </paper-card>
-        </template>
-
-      </template>
+      <sl-grid id="myapp_slgrid" data="{{data.currentList}}"></sl-grid>
     </div>
 
   </template>
@@ -183,84 +111,8 @@
           _isDeletemode: {
             type: Boolean,
             value: false
-          },
-          // true if details should be displayed
-          _isViewmodeDetail: {
-            type: Boolean,
-            value: true
-          },
-          // true if only needed should be displayed
-          _isNeededmode: {
-            type: Boolean,
-            value: false
-          },
-          // true if completed should be hidden
-          _isCompletedmode: {
-            type: Boolean,
-            value: false
-          },
-          // margin depending on detailmode
-          _margin: {
-            type: String,
-            value: 'margin'
-          },
+          }
         };
-      }
-
-      /**
-       * return true if this is the first item to render
-       */
-      _isFirst(index) {
-        if (index === 0) {
-          return true;
-        }
-        return false;
-      }
-
-      /**
-       * return true if this is the last item to render
-       */
-      _isLast(index) {
-        if (index === this.data.currentList.items.length-1) {
-          return true;
-        }
-        return false;
-      }
-
-      /**
-       * return true if this is filtered due to displaymode settings
-       */
-      _isFiltered(neededMode, completeMode, index, needed, done) {
-        var theItem = this.data.currentList.items[index];
-        var isFiltered = false;
-        if (this._isNeededmode && theItem.needed == false) {
-          return true;
-        }
-        if (this._isCompletedmode && theItem.done == true) {
-          return true;
-        }
-        return false;
-      }
-
-      _computeMargin(isViewmodeDetail) {
-        if (isViewmodeDetail) {
-          return "margin";
-        }
-        return "";
-      }
-
-      /**
-       * return true if this item is needed
-       */
-      _isNeeded(needed) {
-        return needed == true;
-      }
-
-      /**
-       * called when needed is changed
-       */
-      _neededChanged(data) {
-        this._setBool(data, 'needed');
       }
 
       /**
@@ -285,30 +137,6 @@
         }
       }
 
-      _doAllBool(b, propName) {
-        var theItems = this.data.currentList.items;
-        for( var i=0; i<theItems.length;i++) {
-          var thePropName = 'data.currentList.items.' + i + "." + propName;
-          this.set(thePropName, app.toBoolean(b));
-          this._changed();
-        }
-        this.savePressed();
-      }
-
-      /**
-       * return true if this item is done
-       */
-      _isDone(done) {
-        return done == true;
-      }
-
-      /**
-       * called when done is changed
-       */
-      _doneChanged(data) {
-        this._setBool(data, 'done');
-      }
-
       /**
        * option to set everything to done
        */
@@ -331,91 +159,20 @@
         }
       }
 
-      /**
-       * set a boolean property bound to a checkbox - oh my!
-       */
-      _setBool(data, propName) {
-        var theItems = this.data.currentList.items;
-        for( var i=0; i<theItems.length;i++) {
-          if(theItems[i].id === data.target.id) {
-            var b = data.target.checked == true;
-            var thePropName = 'data.currentList.items.' + i + "." + propName;
-            this.set(thePropName, app.toBoolean(b));
-            this._changed();
-            this.set('_isNeededmode', this._isNeededmode);
-            this.set('_isCompletedmode', this._isCompletedmode);
-          }
-        }
-      }
-
-      /**
-       * add
-       */
-      _addPressed(data) {
-        var theItems = this.data.currentList.items;
-        for( var i=0; i<theItems.length;i++) {
-          if(theItems[i].id === data.target.id) {
-            this._newItem(i+1);
-            return;
-          }
-        }
+      _doAllBool(b, propName) {
+        this.$.myapp_slgrid.handleMenuChanges(b, propName);
+        // var theItems = this.data.currentList.items;
+        // for( var i=0; i<theItems.length;i++) {
+        //   var thePropName = 'data.currentList.items.' + i + "." + propName;
+        //   this.set(thePropName, app.toBoolean(b));
+        //   this._changed();
+        // }
+        this.savePressed();
       }
       
       addPressed(data) {
-        this._newItem(0);
+        this.$.myapp_slgrid.addPressed();
       }
-
-      _newItem(index) {
-        var theNew = new ShoppingListItem("", UNIT_ST, 1, false, true);
-        this.splice('data.currentList.items', index, 0, theNew);
-        this._saveNeeded(true);
-      }
-
-      /**
-       * delete an item
-       */
-      _deletePressed(data) {
-        var theItems = this.data.currentList.items;
-        for( var i=0; i<theItems.length;i++) {
-          if(theItems[i].id === data.target.id) {
-            this.splice('data.currentList.items', i, 1);
-            this._saveNeeded(true);
-            return;
-          }
-        }
-      }
-
-      /**
-       * down
-       */
-      _downPressed(data) {
-        var theItems = this.data.currentList.items;
-        for( var i=0; i<theItems.length;i++) {
-          if(theItems[i].id === data.target.id && i < theItems.length - 1) {
-            var oldLow = theItems[i];
-            var oldHigh = theItems[i+1];
-            this.splice('data.currentList.items', i, 2, oldHigh, oldLow);
-            this._saveNeeded(true);
-            return;
-          }
-        }
-      }
-
-      /**
-       * up
-       */
-      _upPressed(data) {
-        var theItems = this.data.currentList.items;
-        for( var i=0; i<theItems.length;i++) {
-          if(theItems[i].id === data.target.id && i > 0) {
-            var oldLow = theItems[i-1];
-            var oldHigh = theItems[i];
-            this.splice('data.currentList.items', i-1, 2, oldHigh, oldLow);
-            this._saveNeeded(true);
-            return;
-          }
-        }
-      } 
 
       /**
        * menumode on/off
@@ -431,12 +188,7 @@
         this.$.my_detail_allneededfalse.checked = false;
         this.$.my_detail_alldone.checked = false;
         this.$.my_detail_alldonefalse.checked = false;
-        // add/hide margin for cards
-        if(this._isViewmodeDetail) {
-          this.set('_margin', 'margin');
-        } else {
-          this.set('_margin', '');
-        }
+        this.$.myapp_slgrid.endEdit();
       }
 
       _deleteList() {
