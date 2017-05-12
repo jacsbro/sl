@@ -179,12 +179,13 @@
         if (idBefore) {
           for (var i=0; i<this.data.items.length; i++) {
             if (this.data.items[i].id === idBefore) {
-              this.splice('data.items', i, 0, theNew);
+              this.splice('data.items', i+1, 0, theNew);
               return theNew;
             }
           }
         } else {
           this.splice('data.items', 0, 0, theNew);
+          return theNew;
         }
       }
 
@@ -217,7 +218,9 @@
       _focusEl(el) {
         this.async(function() {
           //el.$.input.focus(); does not work
-          el.inputElement.inputElement.setSelectionRange(0, el.value.length)
+          if (el && el.value) {
+            el.inputElement.inputElement.setSelectionRange(0, el.value.length)
+          }
         }, 1000);
       }
 
