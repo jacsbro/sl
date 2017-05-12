@@ -141,9 +141,11 @@
 
   app.toBoolean = function(bool) {
     if (bool === undefined || bool == false ) { // == is ok for boolean and Boolean
-      return new Boolean(false);
+      //return new Boolean(false);
+      return false;
     }
-    return new Boolean(true);
+    //return new Boolean(true);
+    return true;
   }
 
   //////////////////////////////////////////////////////////////////////////////

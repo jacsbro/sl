@@ -191,6 +191,7 @@
       // opens edit dialog 
       _startEdit(item) {
         this.async(function() {
+          this._changed();
           this.set('edit', item);
           this.$.editdialog.open(); 
           this._focusEl(this.$.nameinput);
@@ -206,12 +207,6 @@
         this.set('edit', e.model.item);
         this.$.editdialog.open(); 
         this._focusEl(this.$.nameinput);
-      }
-
-      // closes the edit dialog
-      _closeDialog()  {
-        this.$.editdialog.close(); 
-        this.endEdit();
       }
 
       // done editing
@@ -252,6 +247,7 @@
        * delete an item
        */
       _deletePressed(data) {
+        this._changed();
         var id2Delete = data.target.id;
         for( var i=0; i<this._itemsDisplay.length;i++) {
           if(this._itemsDisplay[i].id === id2Delete) {
@@ -272,6 +268,7 @@
       //-----------------------------------------------------------------------
        // called when needed is changed on an article
       _neededChanged(e) {
+        this._changed();
         this._neededChanged2(e.target.checked, e.target.id);
       }
 
@@ -296,7 +293,7 @@
         } else {
           tmp = this._copyAll(true);
         }
-        this.set('_itemsDisplay', tmp);
+        this.set('_itemsDisplay', tmp);        
       }
 
       //-----------------------------------------------------------------------
@@ -304,6 +301,7 @@
       //-----------------------------------------------------------------------
        // called when done is changed on an article
       _doneChanged(e) {
+        this._changed();
         this._doneChanged2(e.target.checked, e.target.id);
       }
 
@@ -383,7 +381,17 @@
           }
           return filter;    
       }
-      
+
+
+      _saveNeeded(b) {
+        if (app.set) {
+          app.set('isSaveNeeded', b);
+        }
+      }
+
+      _changed() {
+        this._saveNeeded(true);
+      }      
 
       // load localized messages
       attached() {
