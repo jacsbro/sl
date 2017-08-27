@@ -35,7 +35,7 @@
     <div class="vertical-section-container centered">
       <vaadin-grid id="slTable" items="[[_itemsDisplay]]" size="[[size]]" style="height: 90vh">
 
-       <vaadin-grid-column width = "50%">
+       <vaadin-grid-column width = "45%">
           <template class="header">
             <vaadin-grid-filter path="name" value="[[_filterName]]" on-value-changed="_filterChanged">
               <vaadin-grid-sorter id="name" path="name" slot="filter">
@@ -204,6 +204,7 @@
       //-----------------------------------------------------------------------
       // opens the edit dialog
       _openDialog(e)  {
+        this._changed();
         var item = e.model.item;
         this.set('edit', e.model.item);
         this.$.editdialog.open(); 
